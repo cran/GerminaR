@@ -20,8 +20,8 @@ This function calculates the number of seed germinated.
 \examples{
 
 library(GerminaR)
-dt <- GerminaR
-grs <- ger_GRS(evalName = "Ev", data = dt)
+dt <- prosopis
+grs <- ger_GRS(evalName = "D", data = dt)
 grs
 }
 
