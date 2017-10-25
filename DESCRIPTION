@@ -2,8 +2,8 @@ Package: GerminaR
 Type: Package
 Title: Germination Indexes for Seed Germination Variables for
         Ecophysiological Studies
-Version: 1.1
-Date: 2017-03-04
+Version: 1.2
+Date: 2017-10-25
 Authors@R: c(
     person("Flavio", "Lozano Isla", email = "flavjack@gmail.com", role = c("aut", "cre")),
     person("Omar", "Benites Alfaro", email = "obacc07@gmail.com", role = "aut"),
@@ -20,16 +20,16 @@ Description: Different types of seed indexes, rates and visualization techniques
     are used to provide a robust approach for germination data analysis. The package
     aims to make available germination seed indexes and graphical functions to
     analyze germination seed data.
-Imports: agricolae, assertthat, DT, dplyr, ggplot2, gtools, gsheet,
-        magrittr, readxl, shiny, shinydashboard, tidyr
+Imports: agricolae, assertthat, DT, dplyr, tibble, ggplot2, gtools,
+        gsheet, magrittr, readxl, shiny, shinydashboard, tidyr
 Depends: R (>= 3.2.3)
 Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
 License: MIT + file LICENSE
 LazyData: true
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 NeedsCompilation: no
-Packaged: 2017-03-08 22:31:18 UTC; omar_
+Packaged: 2017-10-25 15:36:50 UTC; Obenites
 Author: Flavio Lozano Isla [aut, cre],
   Omar Benites Alfaro [aut],
   Denise Garcia de Santana [ctb],
@@ -39,4 +39,4 @@ Author: Flavio Lozano Isla [aut, cre],
   Federal Rural University of Pernambuco [cph] (Post Graduate Program)
 Maintainer: Flavio Lozano Isla <flavjack@gmail.com>
 Repository: CRAN
-Date/Publication: 2017-03-09 00:27:01
+Date/Publication: 2017-10-25 16:47:01 UTC

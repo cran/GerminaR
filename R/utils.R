@@ -92,35 +92,33 @@ evalFactor <- function(evalName, data){
 #' @description Function using resulting output from mean comparison test from agricolae package optimized for graphs. 
 #' @param meanComp Object list with the result from mean comparison test
 #' @return Table with complete data for graphics
-#' @importFrom dplyr mutate select rename group_by_ summarise full_join
+#' @importFrom dplyr mutate select rename_ group_by_ summarise full_join rename
+#' @importFrom tibble rownames_to_column
 #' @importFrom tidyr separate
 #' @export
 
 dtsm <- function(meanComp){
   
   #to avoid no bisible global variable function
-  std <- r <- trt <- means <- Min <- Max <- ste <- M <- NULL
+  std <- r <- trt <- mean <- Min <- Max <- ste <- groups <- NULL
   
-  #fct <- as.character(mc$parameters$name.t)
   fct <- as.character(meanComp$parameters$name.t)
   fct <- as.expression(strsplit(fct, split = ":"))
   
-  #dtmn <- mc$means #flavio
-  dtmn <- meanComp$means #omar
-  #dtgr <- mc$groups #flavio
-  dtgr <- meanComp$groups #omar
+  dtmn <- meanComp$means %>% rename_(mean = names(meanComp$means[1]))
+ 
+  dtgr <- meanComp$groups %>% rownames_to_column(var = "trt")
   
   dtgr$trt <- gsub("\\s", "", as.character(dtgr$trt))
   
   dta <- dtmn %>% 
     dplyr::mutate(ste = std/sqrt(r), trt = as.character(row.names(dtmn))) 
                
-  sm <- dplyr::full_join(dta[2:7], dtgr, by = "trt") %>% 
-    dplyr::select(trt, means, Min, Max, r, std, ste, M) %>% 
+  sm <- dplyr::full_join(dta, dtgr, by = "trt") %>% 
+    dplyr::select(trt, mean, Min, Max, r, std, ste, groups) %>% 
     tidyr::separate("trt", sep = ":", into = eval(fct)) %>% 
-    dplyr::rename(mean = means, min = Min, max = Max, sg = M)
+    dplyr::rename(min = Min, max = Max, sg = groups)
   
-
 }
 
 
@@ -218,4 +216,42 @@ ger_getdata <- function(dir, sheet = 1) {
 }
 
 
+#' Descriptive Statistics for a model
+#'
+#' @description Function to summary descriptive statistics from a model
+#' @param modelo an object containing the results returned by a model fitting function
+#' @param data data set used for the model
+#' @return data frame
+#' @importFrom dplyr summarise
+#' @importFrom dplyr '%>%' select_
+#' @importFrom stats anova
+#' @export
+
+stat_sm <- function(modelo, data){
+  
+  avt <- anova(modelo)
+  
+  varn <- colnames(modelo[["model"]][1])
+  
+  
+  smr <- data %>% 
+    select_( varn )
+  
+  MSerror <- SDev <- Mean <- NULL
+  
+  smd <- smr %>%
+    dplyr::summarise(
+      MSerror  =  avt["Residuals", 3],
+      Mean = mean(smr[[varn]], na.rm=TRUE),
+      SDev = sd(smr[[varn]], na.rm=TRUE),
+      Min = min(smr[[varn]], na.rm=TRUE),
+      Max = max(smr[[varn]], na.rm=TRUE),
+      Num = sum(!is.na(smr[[varn]])),
+      CV = sqrt(MSerror) * 100/Mean
+      
+    )
+  
+  smd
+  
+}
 

@@ -19,7 +19,11 @@ shinyServer(function(input, output) {
   output$gb<-renderUI({
     
     getPage<-function() {
-      return(includeHTML("gb.html"))
+      return(
+        
+        HTML('<iframe src="https://flavjack.github.io/GerminaQuant-usm/" style="border: 0; position:fixed; top:50px; left:0; right:0; bottom:50px; width:100%; height:92%">')
+        
+        )
       
       
     }
@@ -529,6 +533,45 @@ av <- reactive({
 
 })
 
+# Assumptions -------------------------------------------------------------
+
+
+assuption_homvar <- reactive({
+  
+  plot(av(),
+       main = "Homogeneity of Variance",
+       # caption = "caption",
+       sub.caption = "",
+       which = 1)
+  
+  
+})
+
+output$assuption_plot01  <- renderPlot({
+  
+  assuption_homvar ()
+  
+})
+
+
+assuption_norm <- reactive({
+  
+  plot(av(),
+       main = "Normal distribution plot",
+       # caption = "caption",
+       sub.caption = "",
+       which = 2)
+  
+  
+})
+
+output$assuption_plot02  <- renderPlot({
+  
+  assuption_norm()
+  
+})
+
+
 
 # ANOVA table
 
@@ -538,7 +581,17 @@ output$tbav = renderPrint({
 
   summary(file)
 
+})
 
+# descriptive Statistics
+
+output$stat_summary = renderTable({
+  
+  file <- av()
+  dt <-  varCal()
+  
+  stat_sm(file, dt)
+  
 })
 
 
