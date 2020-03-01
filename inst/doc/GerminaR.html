@@ -1,65 +1,298 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <meta name="author" content="Flavio Lozano-Isla, Omar Benites-Alfaro, Denise Garcia de Santana, Marli A. Ranal, Marcelo Francisco Pompelli" />
 
-<meta name="date" content="2019-04-17" />
+<meta name="date" content="2020-03-01" />
 
 <title>GerminaR 1.0</title>
 
 
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
 
-<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
 
 </head>
 
@@ -69,8 +302,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">GerminaR 1.0</h1>
-<h4 class="author"><em>Flavio Lozano-Isla, Omar Benites-Alfaro, Denise Garcia de Santana, Marli A. Ranal, Marcelo Francisco Pompelli</em></h4>
-<h4 class="date"><em>2019-04-17</em></h4>
+<h4 class="author">Flavio Lozano-Isla, Omar Benites-Alfaro, Denise Garcia de Santana, Marli A. Ranal, Marcelo Francisco Pompelli</h4>
+<h4 class="date">2020-03-01</h4>
 
 
 <div id="TOC">
@@ -95,16 +328,21 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul>
 </div>
 
-<p>The package <code>GerminaR</code> has been developed to calculate different germination indices and graphical functions to analyze punctual and accumulative germination. For calculating the indices is necessary acumulative germination data. For more details, you can read the description of each index, the seed germination dataset and analysis in the germinar’s book. (<a href="https://flavjack.github.io/GerminaQuant-usm/">GerminaQuant</a>)</p>
-<p>First we load the <code>GerminaR 1.0</code> package. It provides the <code>prosopis</code> dataset set that we will work throughout all the examples.</p>
+<p>The package <code>GerminaR</code> has been developed to calculate different germination indices and graphical functions to analyze punctual and accumulative germination. For calculating the indices is necessary acumulative germination data. For more details, you can read the description of each index, the seed germination dataset and analysis in the germinar’s book. (<a href="https://flavjack.github.io/germinaquant/">GerminaQuant</a>)</p>
+<p>First we load the <code>GerminaR 1.4</code> package. It provides the <code>prosopis</code> dataset set that we will work throughout all the examples.</p>
 <div id="data-germinar" class="section level2">
 <h2>Data: GerminaR</h2>
 <p>The <code>prosopis</code> dataset contains information from an experiment containing information from germination experiment with <em>Prosopis juliflor</em> under different osmotic potentials and temperatures evaluated during 10 days.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(GerminaR)
-<span class="kw">dim</span>(prosopis)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(GerminaR)</a></code></pre></div>
+<pre><code>## Registered S3 methods overwritten by &#39;ggplot2&#39;:
+##   method         from 
+##   [.quosures     rlang
+##   c.quosures     rlang
+##   print.quosures rlang</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">dim</span>(prosopis)</a></code></pre></div>
 <pre><code>## [1] 80 15</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">str</span>(prosopis)</code></pre></div>
-<pre><code>## 'data.frame':    80 obs. of  15 variables:
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">str</span>(prosopis)</a></code></pre></div>
+<pre><code>## &#39;data.frame&#39;:    80 obs. of  15 variables:
 ##  $ rep  : int  1 2 3 4 1 2 3 4 1 2 ...
 ##  $ nacl : num  0 0 0 0 0 0 0 0 0.5 0.5 ...
 ##  $ temp : int  25 25 25 25 30 30 30 30 25 25 ...
@@ -179,14 +417,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="interactive-shiny-application" class="section level2">
 <h2>Interactive shiny application</h2>
 <p>The function<code>GerminaQuant()</code> activates an interactive application with friendly interface for performing the different germination, statistical and graphic analysis. For activation of some function could be necessary internet connection</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">GerminaQuant</span>()</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw">GerminaQuant</span>()</a></code></pre></div>
 </div>
 <div id="summary-of-germination-variables" class="section level2">
 <h2>Summary of Germination Variables</h2>
 <p>The function <code>ger_summary()</code>, according to the accumulative germination data, calculates eleven germination indices maintaining the values of each experimental unit and experiments factor for statistical analysis</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt &lt;-<span class="st"> </span>prosopis
-smr &lt;-<span class="st"> </span><span class="kw">ger_summary</span>(<span class="dt">SeedN =</span> <span class="st">&quot;seeds&quot;</span>, <span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dt)
-knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">head</span>(smr, <span class="dv">10</span>),<span class="dt">align =</span> <span class="st">&quot;c&quot;</span>)</code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">dfr &lt;-<span class="st"> </span>prosopis</a>
+<a class="sourceLine" id="cb8-2" title="2">smr &lt;-<span class="st"> </span><span class="kw">ger_summary</span>(<span class="dt">SeedN =</span> <span class="st">&quot;seeds&quot;</span>, <span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dfr)</a>
+<a class="sourceLine" id="cb8-3" title="3">knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">head</span>(smr, <span class="dv">10</span>),<span class="dt">align =</span> <span class="st">&quot;c&quot;</span>)</a></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -374,32 +612,32 @@ knitr<span class="op">::</span><span class="kw">kable</span>(<span class="kw">he
 <div id="germinated-seed-number" class="section level2">
 <h2>Germinated Seed Number</h2>
 <p><code>ger_GRS()</code> allows you to calculate the number of seed germinated.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt &lt;-<span class="st"> </span>prosopis
-grs &lt;-<span class="st"> </span><span class="kw">ger_GRS</span>(<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dt)
-grs</code></pre></div>
-<pre><code>##  [1] 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 48 48 47 49 49 50 48
-## [24] 50 47 48 48 49 50 50 50 47 47 47 46 49 46 48 47 47 50 50 50 50 50 50
-## [47] 50 50 50 48 50 48 48 49 48 47 49 48 46 49 50 48 49 50 50 48 50 49  6
-## [70]  6  4  5 10 10  9 11  0  0  0  0</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">dfr &lt;-<span class="st"> </span>prosopis</a>
+<a class="sourceLine" id="cb9-2" title="2">grs &lt;-<span class="st"> </span><span class="kw">ger_GRS</span>(<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dfr)</a>
+<a class="sourceLine" id="cb9-3" title="3">grs</a></code></pre></div>
+<pre><code>##  [1] 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 50 48 48 47 49 49 50 48 50 47
+## [26] 48 48 49 50 50 50 47 47 47 46 49 46 48 47 47 50 50 50 50 50 50 50 50 50 48
+## [51] 50 48 48 49 48 47 49 48 46 49 50 48 49 50 50 48 50 49  6  6  4  5 10 10  9
+## [76] 11  0  0  0  0</code></pre>
 </div>
 <div id="germination-seed-percentage" class="section level2">
 <h2>Germination Seed Percentage</h2>
 <p><code>ger_GRP()</code> calculates the germination percentage related at total seed sown for experimental unit.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt &lt;-<span class="st"> </span>prosopis
-grp &lt;-<span class="st"> </span><span class="kw">ger_GRP</span>(<span class="dt">SeedN =</span> <span class="st">&quot;seeds&quot;</span>,<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dt)
-grp</code></pre></div>
-<pre><code>##  [1] 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100  96
-## [18]  96  94  98  98 100  96 100  94  96  96  98 100 100 100  94  94  94
-## [35]  92  98  92  96  94  94 100 100 100 100 100 100 100 100 100  96 100
-## [52]  96  96  98  96  94  98  96  92  98 100  96  98 100 100  96 100  98
-## [69]  12  12   8  10  20  20  18  22   0   0   0   0</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">dfr &lt;-<span class="st"> </span>prosopis</a>
+<a class="sourceLine" id="cb11-2" title="2">grp &lt;-<span class="st"> </span><span class="kw">ger_GRP</span>(<span class="dt">SeedN =</span> <span class="st">&quot;seeds&quot;</span>,<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dfr)</a>
+<a class="sourceLine" id="cb11-3" title="3">grp</a></code></pre></div>
+<pre><code>##  [1] 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100  96  96  94
+## [20]  98  98 100  96 100  94  96  96  98 100 100 100  94  94  94  92  98  92  96
+## [39]  94  94 100 100 100 100 100 100 100 100 100  96 100  96  96  98  96  94  98
+## [58]  96  92  98 100  96  98 100 100  96 100  98  12  12   8  10  20  20  18  22
+## [77]   0   0   0   0</code></pre>
 </div>
 <div id="arcsino-of-the-germination" class="section level2">
 <h2>ArcSino of the germination</h2>
 <p><code>ger_ASG()</code> calculates the arc sin of germination percentage for normalization.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt &lt;-<span class="st"> </span>prosopis
-gas &lt;-<span class="st"> </span><span class="kw">ger_ASG</span>(<span class="dt">SeedN =</span> <span class="st">&quot;seeds&quot;</span>, <span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dt)
-gas</code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1">dfr &lt;-<span class="st"> </span>prosopis</a>
+<a class="sourceLine" id="cb13-2" title="2">gas &lt;-<span class="st"> </span><span class="kw">ger_ASG</span>(<span class="dt">SeedN =</span> <span class="st">&quot;seeds&quot;</span>, <span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dfr)</a>
+<a class="sourceLine" id="cb13-3" title="3">gas</a></code></pre></div>
 <pre><code>##  [1] 1.5707963 1.5707963 1.5707963 1.5707963 1.5707963 1.5707963 1.5707963
 ##  [8] 1.5707963 1.5707963 1.5707963 1.5707963 1.5707963 1.5707963 1.5707963
 ## [15] 1.5707963 1.5707963 1.3694384 1.3694384 1.3233293 1.4288993 1.4288993
@@ -416,28 +654,26 @@ gas</code></pre></div>
 <div id="mean-germination-time" class="section level2">
 <h2>Mean Germination Time</h2>
 <p><code>ger_MGT()</code> estimates the mean germination time according at the time lapse of the evaluations</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt &lt;-<span class="st"> </span>prosopis
-mgt &lt;-<span class="st"> </span><span class="kw">ger_MGT</span>(<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dt)
-mgt</code></pre></div>
-<pre><code>##  [1] 1.280000 1.220000 1.320000 1.140000 1.040000 1.060000 1.000000
-##  [8] 1.020000 1.900000 1.700000 1.880000 1.840000 1.100000 1.160000
-## [15] 1.080000 1.060000 2.666667 2.708333 2.531915 2.897959 1.959184
-## [22] 1.940000 1.833333 1.860000 5.382979 5.458333 5.479167 5.448980
-## [29] 3.160000 2.960000 2.900000 2.957447 6.680851 6.063830 6.695652
-## [36] 6.653061 4.326087 4.333333 4.446809 4.446809 1.040000 1.000000
-## [43] 1.020000 1.000000 1.060000 1.040000 1.020000 1.020000 1.120000
-## [50] 1.062500 1.060000 1.062500 2.333333 2.346939 2.375000 2.255319
-## [57] 1.653061 1.729167 2.173913 1.714286 2.940000 2.520833 2.714286
-## [64] 2.740000 3.380000 3.354167 3.360000 3.387755 3.333333 3.166667
-## [71] 3.250000 3.400000 6.800000 7.400000 6.555556 7.181818      NaN
-## [78]      NaN      NaN      NaN</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">dfr &lt;-<span class="st"> </span>prosopis</a>
+<a class="sourceLine" id="cb15-2" title="2">mgt &lt;-<span class="st"> </span><span class="kw">ger_MGT</span>(<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dfr)</a>
+<a class="sourceLine" id="cb15-3" title="3">mgt</a></code></pre></div>
+<pre><code>##  [1] 1.280000 1.220000 1.320000 1.140000 1.040000 1.060000 1.000000 1.020000
+##  [9] 1.900000 1.700000 1.880000 1.840000 1.100000 1.160000 1.080000 1.060000
+## [17] 2.666667 2.708333 2.531915 2.897959 1.959184 1.940000 1.833333 1.860000
+## [25] 5.382979 5.458333 5.479167 5.448980 3.160000 2.960000 2.900000 2.957447
+## [33] 6.680851 6.063830 6.695652 6.653061 4.326087 4.333333 4.446809 4.446809
+## [41] 1.040000 1.000000 1.020000 1.000000 1.060000 1.040000 1.020000 1.020000
+## [49] 1.120000 1.062500 1.060000 1.062500 2.333333 2.346939 2.375000 2.255319
+## [57] 1.653061 1.729167 2.173913 1.714286 2.940000 2.520833 2.714286 2.740000
+## [65] 3.380000 3.354167 3.360000 3.387755 3.333333 3.166667 3.250000 3.400000
+## [73] 6.800000 7.400000 6.555556 7.181818      NaN      NaN      NaN      NaN</code></pre>
 </div>
 <div id="mean-germination-rate" class="section level2">
 <h2>Mean Germination Rate</h2>
 <p><code>ger_MGR()</code> estimates the mean of germination rate</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt &lt;-<span class="st"> </span>prosopis
-mgr &lt;-<span class="st"> </span><span class="kw">ger_MGR</span>(<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dt)
-mgr</code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1">dfr &lt;-<span class="st"> </span>prosopis</a>
+<a class="sourceLine" id="cb17-2" title="2">mgr &lt;-<span class="st"> </span><span class="kw">ger_MGR</span>(<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dfr)</a>
+<a class="sourceLine" id="cb17-3" title="3">mgr</a></code></pre></div>
 <pre><code>##  [1] 0.7812500 0.8196721 0.7575758 0.8771930 0.9615385 0.9433962 1.0000000
 ##  [8] 0.9803922 0.5263158 0.5882353 0.5319149 0.5434783 0.9090909 0.8620690
 ## [15] 0.9259259 0.9433962 0.3750000 0.3692308 0.3949580 0.3450704 0.5104167
@@ -454,9 +690,9 @@ mgr</code></pre></div>
 <div id="germination-speed" class="section level2">
 <h2>Germination Speed</h2>
 <p><code>ger_GSP()</code> performs the calculation of germination speed according at the time lapse of the evaluations.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt &lt;-<span class="st"> </span>prosopis
-gsp &lt;-<span class="st"> </span><span class="kw">ger_GSP</span>(<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dt)
-gsp</code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1">dfr &lt;-<span class="st"> </span>prosopis</a>
+<a class="sourceLine" id="cb19-2" title="2">gsp &lt;-<span class="st"> </span><span class="kw">ger_GSP</span>(<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dfr)</a>
+<a class="sourceLine" id="cb19-3" title="3">gsp</a></code></pre></div>
 <pre><code>##  [1]  78.12500  81.96721  75.75758  87.71930  96.15385  94.33962 100.00000
 ##  [8]  98.03922  52.63158  58.82353  53.19149  54.34783  90.90909  86.20690
 ## [15]  92.59259  94.33962  37.50000  36.92308  39.49580  34.50704  51.04167
@@ -473,9 +709,9 @@ gsp</code></pre></div>
 <div id="germination-synchronization-index" class="section level2">
 <h2>Germination Synchronization Index</h2>
 <p><code>ger_SYN()</code> calculates germination synchronization of the germination process.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt &lt;-<span class="st"> </span>prosopis
-syn &lt;-<span class="st"> </span><span class="kw">ger_SYN</span>(<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dt)
-syn</code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1">dfr &lt;-<span class="st"> </span>prosopis</a>
+<a class="sourceLine" id="cb21-2" title="2">syn &lt;-<span class="st"> </span><span class="kw">ger_SYN</span>(<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dfr)</a>
+<a class="sourceLine" id="cb21-3" title="3">syn</a></code></pre></div>
 <pre><code>##  [1] 0.63020408 0.66612245 0.55591837 0.75428571 0.92163265 0.88489796
 ##  [7] 1.00000000 0.96000000 0.58122449 0.48000000 0.78448980 0.72571429
 ## [13] 0.81632653 0.72571429 0.84979592 0.88489796 0.38652482 0.40514184
@@ -494,9 +730,9 @@ syn</code></pre></div>
 <div id="germination-uncertainty" class="section level2">
 <h2>Germination Uncertainty</h2>
 <p><code>ger_UNC()</code> measures the germination uncertainty into the germination process.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt &lt;-<span class="st"> </span>prosopis
-unc &lt;-<span class="st"> </span><span class="kw">ger_UNC</span>(<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dt)
-unc</code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1">dfr &lt;-<span class="st"> </span>prosopis</a>
+<a class="sourceLine" id="cb23-2" title="2">unc &lt;-<span class="st"> </span><span class="kw">ger_UNC</span>(<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dfr)</a>
+<a class="sourceLine" id="cb23-3" title="3">unc</a></code></pre></div>
 <pre><code>##  [1] 0.9461447 0.8157272 0.9043815 0.5842388 0.2422922 0.3274449 0.0000000
 ##  [8] 0.1414405 1.0844751 1.1985488 0.5293609 0.6343096 0.4689956 0.6343096
 ## [15] 0.4021792 0.3274449 1.4171327 1.4081359 1.5822405 1.4950825 0.9281698
@@ -513,9 +749,9 @@ unc</code></pre></div>
 <div id="standard-deviation-of-the-mean-germination-time" class="section level2">
 <h2>Standard deviation of the Mean Germination Time</h2>
 <p><code>ger_SDG()</code> estimates the standard deviation of the mean germination time.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt &lt;-<span class="st"> </span>prosopis
-sdg &lt;-<span class="st"> </span><span class="kw">ger_SDG</span>(<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dt)
-sdg</code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1">dfr &lt;-<span class="st"> </span>prosopis</a>
+<a class="sourceLine" id="cb25-2" title="2">sdg &lt;-<span class="st"> </span><span class="kw">ger_SDG</span>(<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dfr)</a>
+<a class="sourceLine" id="cb25-3" title="3">sdg</a></code></pre></div>
 <pre><code>##  [1] 0.5728554 0.4646702 0.4712121 0.3505098 0.1979487 0.2398979 0.0000000
 ##  [8] 0.1414214 0.6144518 0.6144518 0.3282607 0.3703280 0.3030458 0.3703280
 ## [15] 0.2740475 0.2398979 0.6944563 0.8741764 0.9290262 0.7142857 0.4545686
@@ -532,28 +768,26 @@ sdg</code></pre></div>
 <div id="coefficient-of-variance-of-the-mean-germination-time" class="section level2">
 <h2>Coefficient of Variance of the Mean Germination Time</h2>
 <p><code>ger_CVG()</code> Coefficient of Variance of the Mean Germination Time</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt &lt;-<span class="st"> </span>prosopis
-cvg &lt;-<span class="st"> </span><span class="kw">ger_CVG</span>(<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dt)
-cvg</code></pre></div>
-<pre><code>##  [1] 44.75433 38.08772 35.69788 30.74648 19.03353 22.63188  0.00000
-##  [8] 13.86484 32.33957 36.14422 17.46068 20.12652 27.54961 31.92483
-## [15] 25.37477 22.63188 26.04211 32.27728 36.69263 24.64789 23.20194
-## [22] 19.23058 20.54301 18.84461 24.36151 26.44352 26.35138 27.28776
-## [29] 26.63819 16.66282 21.18799 17.20875 11.72228 16.98720 14.38376
-## [36] 14.88942 13.83021 15.30256 16.78174 22.87988 19.03353  0.00000
-## [43] 13.86484  0.00000 22.63188 19.03353 13.86484 13.86484 42.83892
-## [50] 23.02334 29.58827 23.02334 39.86517 36.43710 36.46423 37.51886
-## [57] 33.93191 40.87479 40.34077 29.16667 23.21199 31.68230 33.63209
-## [64] 25.33911 25.28165 22.58815 21.47845 25.43264 24.49490 31.04817
-## [71] 29.45930 26.30668 32.36779 24.83612 29.64891 23.14760      NaN
-## [78]      NaN      NaN      NaN</code></pre>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1">dfr &lt;-<span class="st"> </span>prosopis</a>
+<a class="sourceLine" id="cb27-2" title="2">cvg &lt;-<span class="st"> </span><span class="kw">ger_CVG</span>(<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dfr)</a>
+<a class="sourceLine" id="cb27-3" title="3">cvg</a></code></pre></div>
+<pre><code>##  [1] 44.75433 38.08772 35.69788 30.74648 19.03353 22.63188  0.00000 13.86484
+##  [9] 32.33957 36.14422 17.46068 20.12652 27.54961 31.92483 25.37477 22.63188
+## [17] 26.04211 32.27728 36.69263 24.64789 23.20194 19.23058 20.54301 18.84461
+## [25] 24.36151 26.44352 26.35138 27.28776 26.63819 16.66282 21.18799 17.20875
+## [33] 11.72228 16.98720 14.38376 14.88942 13.83021 15.30256 16.78174 22.87988
+## [41] 19.03353  0.00000 13.86484  0.00000 22.63188 19.03353 13.86484 13.86484
+## [49] 42.83892 23.02334 29.58827 23.02334 39.86517 36.43710 36.46423 37.51886
+## [57] 33.93191 40.87479 40.34077 29.16667 23.21199 31.68230 33.63209 25.33911
+## [65] 25.28165 22.58815 21.47845 25.43264 24.49490 31.04817 29.45930 26.30668
+## [73] 32.36779 24.83612 29.64891 23.14760      NaN      NaN      NaN      NaN</code></pre>
 </div>
 <div id="variance-of-the-mean-germination-time" class="section level2">
 <h2>Variance of the Mean Germination Time</h2>
 <p><code>ger_VGT()</code> compute the variance of the mean during germination time.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt &lt;-<span class="st"> </span>prosopis
-vgt &lt;-<span class="st"> </span><span class="kw">ger_VGT</span>(<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dt)
-vgt</code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" title="1">dfr &lt;-<span class="st"> </span>prosopis</a>
+<a class="sourceLine" id="cb29-2" title="2">vgt &lt;-<span class="st"> </span><span class="kw">ger_VGT</span>(<span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">data =</span> dfr)</a>
+<a class="sourceLine" id="cb29-3" title="3">vgt</a></code></pre></div>
 <pre><code>##  [1] 0.32816327 0.21591837 0.22204082 0.12285714 0.03918367 0.05755102
 ##  [7] 0.00000000 0.02000000 0.37755102 0.37755102 0.10775510 0.13714286
 ## [13] 0.09183673 0.13714286 0.07510204 0.05755102 0.48226950 0.76418440
@@ -572,9 +806,9 @@ vgt</code></pre></div>
 <div id="accumulative-germination" class="section level2">
 <h2>Accumulative germination</h2>
 <p><code>ger_intime()</code> Allow to calculate the accumulative germination</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt &lt;-<span class="st"> </span>prosopis
-grt &lt;-<span class="st"> </span><span class="kw">ger_intime</span>(<span class="dt">Factor =</span> <span class="st">&quot;nacl&quot;</span>, <span class="dt">SeedN =</span> <span class="st">&quot;seeds&quot;</span>, <span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;percentage&quot;</span>, <span class="dt">data =</span> dt)
-<span class="kw">head</span>(grt, <span class="dv">10</span>)</code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1">dfr &lt;-<span class="st"> </span>prosopis</a>
+<a class="sourceLine" id="cb31-2" title="2">grt &lt;-<span class="st"> </span><span class="kw">ger_intime</span>(<span class="dt">Factor =</span> <span class="st">&quot;nacl&quot;</span>, <span class="dt">SeedN =</span> <span class="st">&quot;seeds&quot;</span>, <span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;percentage&quot;</span>, <span class="dt">data =</span> dfr)</a>
+<a class="sourceLine" id="cb31-3" title="3"><span class="kw">head</span>(grt, <span class="dv">10</span>)</a></code></pre></div>
 <pre><code>##    nacl evaluation  mean  r      std       ste
 ## 1     0          0   0.0 16 0.000000 0.0000000
 ## 2     0          1  92.5 16 9.451631 2.3629078
@@ -590,19 +824,22 @@ grt &lt;-<span class="st"> </span><span class="kw">ger_intime</span>(<span class
 <div id="plot-function" class="section level2">
 <h2>Plot function</h2>
 <p><code>fplot()</code> is generic plot function optimized for publication graphs</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dt &lt;-<span class="st"> </span>prosopis
-grt &lt;-<span class="st"> </span><span class="kw">ger_intime</span>(<span class="dt">Factor =</span> <span class="st">&quot;nacl&quot;</span>, <span class="dt">SeedN =</span> <span class="st">&quot;seeds&quot;</span>, <span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;percentage&quot;</span>, <span class="dt">data =</span> dt)
-
-<span class="kw">fplot</span>(<span class="dt">data =</span> grt, <span class="dt">type =</span> <span class="st">&quot;line&quot;</span>,
-      <span class="dt">x =</span> <span class="st">&quot;evaluation&quot;</span>,
-      <span class="dt">y =</span> <span class="st">&quot;mean&quot;</span>,
-      <span class="dt">z =</span> <span class="st">&quot;nacl&quot;</span>,
-      <span class="dt">ylab =</span> <span class="st">&quot;Germination ('%')&quot;</span>,
-      <span class="dt">xlab =</span> <span class="st">&quot;days&quot;</span>, <span class="dt">lgl =</span> <span class="st">&quot;NaCl (mM)&quot;</span>,
-      <span class="dt">lgd =</span> <span class="st">&quot;top&quot;</span>, <span class="dt">color =</span> F)</code></pre></div>
-<p><img src="data:image/png;base64,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" /><!-- --></p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" title="1">dfr &lt;-<span class="st"> </span>prosopis</a>
+<a class="sourceLine" id="cb33-2" title="2">grt &lt;-<span class="st"> </span><span class="kw">ger_intime</span>(<span class="dt">Factor =</span> <span class="st">&quot;nacl&quot;</span>, <span class="dt">SeedN =</span> <span class="st">&quot;seeds&quot;</span>, <span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span>, <span class="dt">method =</span> <span class="st">&quot;percentage&quot;</span>, <span class="dt">data =</span> dfr)</a>
+<a class="sourceLine" id="cb33-3" title="3"></a>
+<a class="sourceLine" id="cb33-4" title="4"><span class="kw">fplot</span>(<span class="dt">data =</span> grt, <span class="dt">type =</span> <span class="st">&quot;line&quot;</span>,</a>
+<a class="sourceLine" id="cb33-5" title="5">      <span class="dt">x =</span> <span class="st">&quot;evaluation&quot;</span>,</a>
+<a class="sourceLine" id="cb33-6" title="6">      <span class="dt">y =</span> <span class="st">&quot;mean&quot;</span>,</a>
+<a class="sourceLine" id="cb33-7" title="7">      <span class="dt">z =</span> <span class="st">&quot;nacl&quot;</span>,</a>
+<a class="sourceLine" id="cb33-8" title="8">      <span class="dt">ylab =</span> <span class="st">&quot;Germination (&#39;%&#39;)&quot;</span>,</a>
+<a class="sourceLine" id="cb33-9" title="9">      <span class="dt">xlab =</span> <span class="st">&quot;days&quot;</span>, <span class="dt">lgl =</span> <span class="st">&quot;NaCl (mM)&quot;</span>,</a>
+<a class="sourceLine" id="cb33-10" title="10">      <span class="dt">lgd =</span> <span class="st">&quot;top&quot;</span>, <span class="dt">color =</span> F)</a></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
 </div>
 
+
+
+<!-- code folding -->
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

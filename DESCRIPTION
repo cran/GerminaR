@@ -1,33 +1,30 @@
 Type: Package
 Package: GerminaR
-Title: Germination Indices and Graphics for Seed Germination in
-        Ecophysiological Studies
-Version: 1.3
-Description: The aim of GerminaR consists of the assessment of different seed germination indices and visualization techniques that provide a robust approach for germination data analysis.
-Date: 2019-04-17
+Title: Indices and Graphics for Assess Seed Germination Process
+Version: 1.4
+Description: A collection of different indices and visualization techniques for evaluate the seed germination process in ecophysiological studies (Lozano-Isla et al. 2019) <doi:10.1111/1440-1703.1275>.
+Date: 2020-02-25
 Authors@R: c(
     person("Flavio", "Lozano Isla", email = "flavjack@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-0714-669X")),
     person("Omar", "Benites Alfaro", email = "obacc07@gmail.com", role = "aut", comment = c(ORCID = "0000-0002-6852-9598")),
     person("Denise", "Garcia de Santana", email = "denise.santana@ufu.br", role = "ctb"),
     person("Marli A.", "Ranal", email = "ranal@ufu.br", role = "ctb"),
     person("Marcelo F.", "Pompelli", email = "mpompelli@gmail.com", role = c("aut","ths"), comment = c(ORCID = "0000-0002-4408-6374")),
-    person(family = "Federal University of Pernambuco", role = "cph",
-    comment = "Register of application"),
-    person(family = "Federal Rural University of Pernambuco", role = "cph",
-    comment = "Post Graduate Program")
+    person(family = "Federal University of Pernambuco", role = "cph",comment = "Register of application"),
+    person(family = "Federal Rural University of Pernambuco", role = "cph", comment = "Post Graduate Program")
     )
-URL: https://flavjack.shinyapps.io/germinaquant/
-BugReports: https://github.com/Flavjack/GerminaR/issues
-Imports: agricolae, assertthat, DT, dplyr, tibble, ggplot2, gtools,
-        gsheet, magrittr, readxl, shiny, shinydashboard, tidyr
-Depends: R (>= 3.2.3)
+URL: https://flavjack.github.io/germinaquant/
+BugReports: https://github.com/flavjack/germinar/issues
+Imports: agricolae, dplyr, ggplot2, magrittr, readxl, tibble, tidyr,
+        assertthat, DT, purrr, gtools, gsheet, shiny, shinydashboard
+Depends: R (>= 3.5.0)
 Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
 License: MIT + file LICENSE
 LazyData: true
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 NeedsCompilation: no
-Packaged: 2019-04-17 17:24:15 UTC; omar_
+Packaged: 2020-03-01 12:58:06 UTC; omar_
 Author: Flavio Lozano Isla [aut, cre] (<https://orcid.org/0000-0002-0714-669X>),
   Omar Benites Alfaro [aut] (<https://orcid.org/0000-0002-6852-9598>),
   Denise Garcia de Santana [ctb],
@@ -38,4 +35,4 @@ Author: Flavio Lozano Isla [aut, cre] (<https://orcid.org/0000-0002-0714-669X>),
   Federal Rural University of Pernambuco [cph] (Post Graduate Program)
 Maintainer: Flavio Lozano Isla <flavjack@gmail.com>
 Repository: CRAN
-Date/Publication: 2019-04-18 16:30:21 UTC
+Date/Publication: 2020-03-01 15:30:06 UTC
