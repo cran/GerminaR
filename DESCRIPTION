@@ -1,9 +1,9 @@
 Type: Package
 Package: GerminaR
 Title: Indices and Graphics for Assess Seed Germination Process
-Version: 1.4
+Version: 1.4.2
 Description: A collection of different indices and visualization techniques for evaluate the seed germination process in ecophysiological studies (Lozano-Isla et al. 2019) <doi:10.1111/1440-1703.1275>.
-Date: 2020-02-25
+Date: 2020-03-23
 Authors@R: c(
     person("Flavio", "Lozano Isla", email = "flavjack@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-0714-669X")),
     person("Omar", "Benites Alfaro", email = "obacc07@gmail.com", role = "aut", comment = c(ORCID = "0000-0002-6852-9598")),
@@ -22,9 +22,9 @@ Suggests: testthat, knitr, rmarkdown
 VignetteBuilder: knitr
 License: MIT + file LICENSE
 LazyData: true
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 NeedsCompilation: no
-Packaged: 2020-03-01 12:58:06 UTC; omar_
+Packaged: 2020-03-28 11:12:11 UTC; ASUS
 Author: Flavio Lozano Isla [aut, cre] (<https://orcid.org/0000-0002-0714-669X>),
   Omar Benites Alfaro [aut] (<https://orcid.org/0000-0002-6852-9598>),
   Denise Garcia de Santana [ctb],
@@ -35,4 +35,4 @@ Author: Flavio Lozano Isla [aut, cre] (<https://orcid.org/0000-0002-0714-669X>),
   Federal Rural University of Pernambuco [cph] (Post Graduate Program)
 Maintainer: Flavio Lozano Isla <flavjack@gmail.com>
 Repository: CRAN
-Date/Publication: 2020-03-01 15:30:06 UTC
+Date/Publication: 2020-03-28 11:30:05 UTC
