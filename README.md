@@ -1,40 +1,57 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/v3o938fhw0unvbs7?svg=true)](https://ci.appveyor.com/project/omarbenites/germinar)
 
-[![Build Status](https://travis-ci.org/Flavjack/GerminaR.svg?branch=master)](https://travis-ci.org/Flavjack/GerminaR)
+<!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/GerminaR)](https://cran.r-project.org/package=GerminaR)
+# GerminaR <img src="man/figures/logo.png" align="right" alt="" width="120" />
 
-# GerminaR 
+<!-- badges: start -->
 
-GerminaR is the first platform base in open source package to calculate and graphic the germination indices in R. GerminaR include a web application called "GerminQuant for R" for non programming user.
+[![Build
+status](https://ci.appveyor.com/api/projects/status/v3o938fhw0unvbs7?svg=true)](https://ci.appveyor.com/project/omarbenites/germinar)
+[![Build
+Status](https://travis-ci.org/Flavjack/GerminaR.svg?branch=master)](https://travis-ci.org/Flavjack/GerminaR)
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/GerminaR)](https://cran.r-project.org/package=GerminaR)
+<!-- badges: end -->
 
-<div style="display:inline-block; width:100%"><p style="text-align:center"><a target="_blank" href="https://flavjack.github.io/germinaquant/"><img src="https://raw.githubusercontent.com/Flavjack/GerminaR/master/inst/GerminaQuant/www/favicon/android-chrome-256x256.png" style="height:80px" title="GerminaQuant" alt="GerminaQuant for R"></a></p></div>
-
-## Citation
-
-Lozano-Isla, Flavio; Benites-Alfaro, Omar Eduardo; Pompelli, Marcelo Francisco (2019). GerminaR: An R package for germination analysis with the interactive web application “GerminaQuant for R.” Ecological Research, 34(2), 339–346. <https://doi.org/10.1111/1440-1703.1275>
+GerminaR is a platform base in open source package to calculate and
+graphic the germination indices in R. GerminaR include a web application
+called “GerminQuant for R” for non programming user.
 
 ## Installation
 
-To install the developing version of this package you need package devtools:
+You can install the released version of GerminaR from
+[CRAN](https://cran.r-project.org/package=GerminaR) with:
 
-```{r eval=F}
-install.packages(devtools)
+``` r
+install.packages("GerminaR")
 ```
 
-Then type:
+And the development version from
+[GitHub](https://github.com/flavjack/GerminaR) with:
 
-```{r eval=F}
-devtools::install_github("Flavjack/GerminaR")
+``` r
+if (!require("remotes"))
+  install.packages("remotes")
+remotes::install_github("Flavjack/GerminaR")
 ```
 
-## Usage
+## GerminaQuant app
 
-To load the package type in your computer:
-
-```{r eval=F}
+``` r
 library(GerminaR)
+GerminaQuant()
 ```
 
-More information in the user manual: <https://flavjack.github.io/germinaquant/>
+If is the first time running the app you should install the app
+dependencies, including the following argument
+`GerminaQuant(dependencies = T)`
 
+After install the package and the app dependencies also you can access
+to the app through the Addins list in Rstudio or using the following
+link in the internet <https://flavjack.shinyapps.io/germinaquant/>
+
+## Citation
+
+Lozano-Isla, Flavio; Benites-Alfaro, Omar Eduardo; Pompelli, Marcelo
+Francisco (2019). GerminaR: An R package for germination analysis with
+the interactive web application “GerminaQuant for R.” Ecological
+Research, 34(2), 339–346. <https://doi.org/10.1111/1440-1703.1275>

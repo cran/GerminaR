@@ -1,0 +1,1757 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>GerminaR: data analysis with code</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
+<style type="text/css">
+a.anchor-section {margin-left: 10px; visibility: hidden; color: inherit;}
+a.anchor-section::before {content: '#';}
+.hasAnchor:hover a.anchor-section {visibility: visible;}
+</style>
+<script>// Anchor sections v1.0 written by Atsushi Yasumoto on Oct 3rd, 2020.
+document.addEventListener('DOMContentLoaded', function() {
+  // Do nothing if AnchorJS is used
+  if (typeof window.anchors === 'object' && anchors.hasOwnProperty('hasAnchorJSLink')) {
+    return;
+  }
+
+  const h = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+  // Do nothing if sections are already anchored
+  if (Array.from(h).some(x => x.classList.contains('hasAnchor'))) {
+    return null;
+  }
+
+  // Use section id when pandoc runs with --section-divs
+  const section_id = function(x) {
+    return ((x.classList.contains('section') || (x.tagName === 'SECTION'))
+            ? x.id : '');
+  };
+
+  // Add anchors
+  h.forEach(function(x) {
+    const id = x.id || section_id(x.parentElement);
+    if (id === '') {
+      return null;
+    }
+    let anchor = document.createElement('a');
+    anchor.href = '#' + id;
+    anchor.classList = ['anchor-section'];
+    x.classList.add('hasAnchor');
+    x.appendChild(anchor);
+  });
+});
+</script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">GerminaR: data analysis with code</h1>
+
+
+
+<p>Analysis for the germination experiment can follow a routine. The functions will de explain according to the data set included in the GerminaR package (“<em>prosopis</em>”).</p>
+<ol style="list-style-type: decimal">
+<li>Install and load the GerminaR package. Load the “<em>prosopis</em>” dataset on your session. In case of using another dataset, you can load your own data and proceed according to the following script:</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Install packages and dependencies</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">library</span>(GerminaR)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="kw">library</span>(dplyr)</span>
+<span id="cb1-5"><a href="#cb1-5"></a></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="co"># load data</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a></span>
+<span id="cb1-8"><a href="#cb1-8"></a>fb &lt;-<span class="st"> </span>prosopis <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="st">   </span>dplyr<span class="op">::</span><span class="kw">mutate</span>(<span class="kw">across</span>(<span class="kw">c</span>(nacl, temp, rep), as.factor))</span>
+<span id="cb1-10"><a href="#cb1-10"></a></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="co"># Prosopis data set</span></span>
+<span id="cb1-12"><a href="#cb1-12"></a></span>
+<span id="cb1-13"><a href="#cb1-13"></a>fb <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-14"><a href="#cb1-14"></a><span class="st">   </span><span class="kw">head</span>(<span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-15"><a href="#cb1-15"></a><span class="st">   </span><span class="kw">kable</span>(<span class="dt">caption =</span> <span class="st">&quot;Prosopis dataset loaded&quot;</span>)</span></code></pre></div>
+<table>
+<caption>Prosopis dataset loaded</caption>
+<thead>
+<tr class="header">
+<th align="left">rep</th>
+<th align="left">nacl</th>
+<th align="left">temp</th>
+<th align="right">seeds</th>
+<th align="right">D0</th>
+<th align="right">D1</th>
+<th align="right">D2</th>
+<th align="right">D3</th>
+<th align="right">D4</th>
+<th align="right">D5</th>
+<th align="right">D6</th>
+<th align="right">D7</th>
+<th align="right">D8</th>
+<th align="right">D9</th>
+<th align="right">D10</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">25</td>
+<td align="right">50</td>
+<td align="right">0</td>
+<td align="right">39</td>
+<td align="right">8</td>
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">0</td>
+<td align="left">25</td>
+<td align="right">50</td>
+<td align="right">0</td>
+<td align="right">40</td>
+<td align="right">9</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">0</td>
+<td align="left">25</td>
+<td align="right">50</td>
+<td align="right">0</td>
+<td align="right">34</td>
+<td align="right">16</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">0</td>
+<td align="left">25</td>
+<td align="right">50</td>
+<td align="right">0</td>
+<td align="right">43</td>
+<td align="right">7</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">30</td>
+<td align="right">50</td>
+<td align="right">0</td>
+<td align="right">48</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">0</td>
+<td align="left">30</td>
+<td align="right">50</td>
+<td align="right">0</td>
+<td align="right">47</td>
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">0</td>
+<td align="left">30</td>
+<td align="right">50</td>
+<td align="right">0</td>
+<td align="right">50</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">0</td>
+<td align="left">30</td>
+<td align="right">50</td>
+<td align="right">0</td>
+<td align="right">49</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">0.5</td>
+<td align="left">25</td>
+<td align="right">50</td>
+<td align="right">0</td>
+<td align="right">10</td>
+<td align="right">37</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">0.5</td>
+<td align="left">25</td>
+<td align="right">50</td>
+<td align="right">0</td>
+<td align="right">18</td>
+<td align="right">30</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<ol start="2" style="list-style-type: decimal">
+<li>Calculate the germination indices and perform the ANOVA and the mean comparison tests. The user can generate the graphs, expressing their results, which can be either of bars or lines graphics.</li>
+</ol>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="co"># germination analysis (ten variables)</span></span>
+<span id="cb2-3"><a href="#cb2-3"></a></span>
+<span id="cb2-4"><a href="#cb2-4"></a>gsm &lt;-<span class="st"> </span><span class="kw">ger_summary</span>(<span class="dt">SeedN =</span> <span class="st">&quot;seeds&quot;</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a>                   , <span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6"></a>                   , <span class="dt">data =</span> fb</span>
+<span id="cb2-7"><a href="#cb2-7"></a>                   )</span>
+<span id="cb2-8"><a href="#cb2-8"></a></span>
+<span id="cb2-9"><a href="#cb2-9"></a><span class="co"># Prosopis data set processed</span></span>
+<span id="cb2-10"><a href="#cb2-10"></a></span>
+<span id="cb2-11"><a href="#cb2-11"></a>gsm <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb2-12"><a href="#cb2-12"></a><span class="st">   </span><span class="kw">head</span>(<span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb2-13"><a href="#cb2-13"></a><span class="st">   </span><span class="kw">kable</span>(<span class="dt">caption =</span> <span class="st">&quot;Function ger_summary performe ten germination indices&quot;</span>)</span></code></pre></div>
+<table style="width:100%;">
+<caption>Function ger_summary performe ten germination indices</caption>
+<colgroup>
+<col width="3%"></col>
+<col width="4%"></col>
+<col width="4%"></col>
+<col width="5%"></col>
+<col width="3%"></col>
+<col width="3%"></col>
+<col width="4%"></col>
+<col width="9%"></col>
+<col width="9%"></col>
+<col width="9%"></col>
+<col width="9%"></col>
+<col width="9%"></col>
+<col width="9%"></col>
+<col width="8%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">rep</th>
+<th align="left">nacl</th>
+<th align="left">temp</th>
+<th align="right">seeds</th>
+<th align="right">grs</th>
+<th align="right">grp</th>
+<th align="right">mgt</th>
+<th align="right">mgr</th>
+<th align="right">gsp</th>
+<th align="right">unc</th>
+<th align="right">syn</th>
+<th align="right">vgt</th>
+<th align="right">sdg</th>
+<th align="right">cvg</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">25</td>
+<td align="right">50</td>
+<td align="right">50</td>
+<td align="right">100</td>
+<td align="right">1.28</td>
+<td align="right">0.7812500</td>
+<td align="right">78.12500</td>
+<td align="right">0.9461447</td>
+<td align="right">0.6302041</td>
+<td align="right">0.3281633</td>
+<td align="right">0.5728554</td>
+<td align="right">44.75433</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">0</td>
+<td align="left">25</td>
+<td align="right">50</td>
+<td align="right">50</td>
+<td align="right">100</td>
+<td align="right">1.22</td>
+<td align="right">0.8196721</td>
+<td align="right">81.96721</td>
+<td align="right">0.8157272</td>
+<td align="right">0.6661224</td>
+<td align="right">0.2159184</td>
+<td align="right">0.4646702</td>
+<td align="right">38.08772</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">0</td>
+<td align="left">25</td>
+<td align="right">50</td>
+<td align="right">50</td>
+<td align="right">100</td>
+<td align="right">1.32</td>
+<td align="right">0.7575758</td>
+<td align="right">75.75758</td>
+<td align="right">0.9043815</td>
+<td align="right">0.5559184</td>
+<td align="right">0.2220408</td>
+<td align="right">0.4712121</td>
+<td align="right">35.69788</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">0</td>
+<td align="left">25</td>
+<td align="right">50</td>
+<td align="right">50</td>
+<td align="right">100</td>
+<td align="right">1.14</td>
+<td align="right">0.8771930</td>
+<td align="right">87.71930</td>
+<td align="right">0.5842388</td>
+<td align="right">0.7542857</td>
+<td align="right">0.1228571</td>
+<td align="right">0.3505098</td>
+<td align="right">30.74648</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">0</td>
+<td align="left">30</td>
+<td align="right">50</td>
+<td align="right">50</td>
+<td align="right">100</td>
+<td align="right">1.04</td>
+<td align="right">0.9615385</td>
+<td align="right">96.15385</td>
+<td align="right">0.2422922</td>
+<td align="right">0.9216327</td>
+<td align="right">0.0391837</td>
+<td align="right">0.1979487</td>
+<td align="right">19.03353</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">0</td>
+<td align="left">30</td>
+<td align="right">50</td>
+<td align="right">50</td>
+<td align="right">100</td>
+<td align="right">1.06</td>
+<td align="right">0.9433962</td>
+<td align="right">94.33962</td>
+<td align="right">0.3274449</td>
+<td align="right">0.8848980</td>
+<td align="right">0.0575510</td>
+<td align="right">0.2398979</td>
+<td align="right">22.63188</td>
+</tr>
+<tr class="odd">
+<td align="left">3</td>
+<td align="left">0</td>
+<td align="left">30</td>
+<td align="right">50</td>
+<td align="right">50</td>
+<td align="right">100</td>
+<td align="right">1.00</td>
+<td align="right">1.0000000</td>
+<td align="right">100.00000</td>
+<td align="right">0.0000000</td>
+<td align="right">1.0000000</td>
+<td align="right">0.0000000</td>
+<td align="right">0.0000000</td>
+<td align="right">0.00000</td>
+</tr>
+<tr class="even">
+<td align="left">4</td>
+<td align="left">0</td>
+<td align="left">30</td>
+<td align="right">50</td>
+<td align="right">50</td>
+<td align="right">100</td>
+<td align="right">1.02</td>
+<td align="right">0.9803922</td>
+<td align="right">98.03922</td>
+<td align="right">0.1414405</td>
+<td align="right">0.9600000</td>
+<td align="right">0.0200000</td>
+<td align="right">0.1414214</td>
+<td align="right">13.86484</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">0.5</td>
+<td align="left">25</td>
+<td align="right">50</td>
+<td align="right">50</td>
+<td align="right">100</td>
+<td align="right">1.90</td>
+<td align="right">0.5263158</td>
+<td align="right">52.63158</td>
+<td align="right">1.0844751</td>
+<td align="right">0.5812245</td>
+<td align="right">0.3775510</td>
+<td align="right">0.6144518</td>
+<td align="right">32.33957</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">0.5</td>
+<td align="left">25</td>
+<td align="right">50</td>
+<td align="right">50</td>
+<td align="right">100</td>
+<td align="right">1.70</td>
+<td align="right">0.5882353</td>
+<td align="right">58.82353</td>
+<td align="right">1.1985488</td>
+<td align="right">0.4800000</td>
+<td align="right">0.3775510</td>
+<td align="right">0.6144518</td>
+<td align="right">36.14422</td>
+</tr>
+</tbody>
+</table>
+<div id="punctual-analysis-of-germination" class="section level2">
+<h2>Punctual analysis of germination</h2>
+<div id="germination-percentage" class="section level3">
+<h3>Germination percentage</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="co">## Germination Percentage (GRP)</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a></span>
+<span id="cb3-4"><a href="#cb3-4"></a><span class="co"># analysis of variance</span></span>
+<span id="cb3-5"><a href="#cb3-5"></a></span>
+<span id="cb3-6"><a href="#cb3-6"></a>av &lt;-<span class="st"> </span><span class="kw">aov</span>(<span class="dt">formula =</span> grp <span class="op">~</span><span class="st"> </span>nacl<span class="op">*</span>temp <span class="op">+</span><span class="st"> </span>rep, <span class="dt">data =</span> gsm)</span>
+<span id="cb3-7"><a href="#cb3-7"></a></span>
+<span id="cb3-8"><a href="#cb3-8"></a><span class="co"># mean comparison test</span></span>
+<span id="cb3-9"><a href="#cb3-9"></a></span>
+<span id="cb3-10"><a href="#cb3-10"></a>mc_grp &lt;-<span class="st"> </span><span class="kw">ger_testcomp</span>(<span class="dt">aov =</span> av</span>
+<span id="cb3-11"><a href="#cb3-11"></a>                       , <span class="dt">comp =</span> <span class="kw">c</span>(<span class="st">&quot;temp&quot;</span>, <span class="st">&quot;nacl&quot;</span>)</span>
+<span id="cb3-12"><a href="#cb3-12"></a>                       , <span class="dt">type =</span> <span class="st">&quot;snk&quot;</span></span>
+<span id="cb3-13"><a href="#cb3-13"></a>                       )</span>
+<span id="cb3-14"><a href="#cb3-14"></a></span>
+<span id="cb3-15"><a href="#cb3-15"></a><span class="co"># data result</span></span>
+<span id="cb3-16"><a href="#cb3-16"></a></span>
+<span id="cb3-17"><a href="#cb3-17"></a>mc_grp<span class="op">$</span>table <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-18"><a href="#cb3-18"></a><span class="st">   </span><span class="kw">kable</span>(<span class="dt">caption =</span> <span class="st">&quot;Germination percentage mean comparision&quot;</span>)</span></code></pre></div>
+<table>
+<caption>Germination percentage mean comparision</caption>
+<thead>
+<tr class="header">
+<th align="left">temp</th>
+<th align="left">nacl</th>
+<th align="right">grp</th>
+<th align="right">std</th>
+<th align="right">r</th>
+<th align="right">ste</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="left">sig</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">25</td>
+<td align="left">0</td>
+<td align="right">100.0</td>
+<td align="right">0.000000</td>
+<td align="right">4</td>
+<td align="right">0.0000000</td>
+<td align="right">100</td>
+<td align="right">100</td>
+<td align="left">a</td>
+</tr>
+<tr class="even">
+<td align="left">25</td>
+<td align="left">0.5</td>
+<td align="right">100.0</td>
+<td align="right">0.000000</td>
+<td align="right">4</td>
+<td align="right">0.0000000</td>
+<td align="right">100</td>
+<td align="right">100</td>
+<td align="left">a</td>
+</tr>
+<tr class="odd">
+<td align="left">25</td>
+<td align="left">1</td>
+<td align="right">96.0</td>
+<td align="right">1.632993</td>
+<td align="right">4</td>
+<td align="right">0.8164966</td>
+<td align="right">94</td>
+<td align="right">98</td>
+<td align="left">abc</td>
+</tr>
+<tr class="even">
+<td align="left">25</td>
+<td align="left">1.5</td>
+<td align="right">96.0</td>
+<td align="right">1.632993</td>
+<td align="right">4</td>
+<td align="right">0.8164966</td>
+<td align="right">94</td>
+<td align="right">98</td>
+<td align="left">abc</td>
+</tr>
+<tr class="odd">
+<td align="left">25</td>
+<td align="left">2</td>
+<td align="right">94.5</td>
+<td align="right">2.516611</td>
+<td align="right">4</td>
+<td align="right">1.2583057</td>
+<td align="right">92</td>
+<td align="right">98</td>
+<td align="left">bc</td>
+</tr>
+<tr class="even">
+<td align="left">30</td>
+<td align="left">0</td>
+<td align="right">100.0</td>
+<td align="right">0.000000</td>
+<td align="right">4</td>
+<td align="right">0.0000000</td>
+<td align="right">100</td>
+<td align="right">100</td>
+<td align="left">a</td>
+</tr>
+<tr class="odd">
+<td align="left">30</td>
+<td align="left">0.5</td>
+<td align="right">100.0</td>
+<td align="right">0.000000</td>
+<td align="right">4</td>
+<td align="right">0.0000000</td>
+<td align="right">100</td>
+<td align="right">100</td>
+<td align="left">a</td>
+</tr>
+<tr class="even">
+<td align="left">30</td>
+<td align="left">1</td>
+<td align="right">98.5</td>
+<td align="right">1.914854</td>
+<td align="right">4</td>
+<td align="right">0.9574271</td>
+<td align="right">96</td>
+<td align="right">100</td>
+<td align="left">a</td>
+</tr>
+<tr class="odd">
+<td align="left">30</td>
+<td align="left">1.5</td>
+<td align="right">98.5</td>
+<td align="right">3.000000</td>
+<td align="right">4</td>
+<td align="right">1.5000000</td>
+<td align="right">94</td>
+<td align="right">100</td>
+<td align="left">a</td>
+</tr>
+<tr class="even">
+<td align="left">30</td>
+<td align="left">2</td>
+<td align="right">94.0</td>
+<td align="right">1.632993</td>
+<td align="right">4</td>
+<td align="right">0.8164966</td>
+<td align="right">92</td>
+<td align="right">96</td>
+<td align="left">c</td>
+</tr>
+<tr class="odd">
+<td align="left">35</td>
+<td align="left">0</td>
+<td align="right">100.0</td>
+<td align="right">0.000000</td>
+<td align="right">4</td>
+<td align="right">0.0000000</td>
+<td align="right">100</td>
+<td align="right">100</td>
+<td align="left">a</td>
+</tr>
+<tr class="even">
+<td align="left">35</td>
+<td align="left">0.5</td>
+<td align="right">98.0</td>
+<td align="right">2.309401</td>
+<td align="right">4</td>
+<td align="right">1.1547005</td>
+<td align="right">96</td>
+<td align="right">100</td>
+<td align="left">ab</td>
+</tr>
+<tr class="odd">
+<td align="left">35</td>
+<td align="left">1</td>
+<td align="right">96.0</td>
+<td align="right">2.828427</td>
+<td align="right">4</td>
+<td align="right">1.4142136</td>
+<td align="right">92</td>
+<td align="right">98</td>
+<td align="left">abc</td>
+</tr>
+<tr class="even">
+<td align="left">35</td>
+<td align="left">1.5</td>
+<td align="right">98.5</td>
+<td align="right">1.914854</td>
+<td align="right">4</td>
+<td align="right">0.9574271</td>
+<td align="right">96</td>
+<td align="right">100</td>
+<td align="left">a</td>
+</tr>
+<tr class="odd">
+<td align="left">35</td>
+<td align="left">2</td>
+<td align="right">20.0</td>
+<td align="right">1.632993</td>
+<td align="right">4</td>
+<td align="right">0.8164966</td>
+<td align="right">18</td>
+<td align="right">22</td>
+<td align="left">d</td>
+</tr>
+<tr class="even">
+<td align="left">40</td>
+<td align="left">0</td>
+<td align="right">100.0</td>
+<td align="right">0.000000</td>
+<td align="right">4</td>
+<td align="right">0.0000000</td>
+<td align="right">100</td>
+<td align="right">100</td>
+<td align="left">a</td>
+</tr>
+<tr class="odd">
+<td align="left">40</td>
+<td align="left">0.5</td>
+<td align="right">96.0</td>
+<td align="right">1.632993</td>
+<td align="right">4</td>
+<td align="right">0.8164966</td>
+<td align="right">94</td>
+<td align="right">98</td>
+<td align="left">abc</td>
+</tr>
+<tr class="even">
+<td align="left">40</td>
+<td align="left">1</td>
+<td align="right">98.5</td>
+<td align="right">1.914854</td>
+<td align="right">4</td>
+<td align="right">0.9574271</td>
+<td align="right">96</td>
+<td align="right">100</td>
+<td align="left">a</td>
+</tr>
+<tr class="odd">
+<td align="left">40</td>
+<td align="left">1.5</td>
+<td align="right">10.5</td>
+<td align="right">1.914854</td>
+<td align="right">4</td>
+<td align="right">0.9574271</td>
+<td align="right">8</td>
+<td align="right">12</td>
+<td align="left">e</td>
+</tr>
+<tr class="even">
+<td align="left">40</td>
+<td align="left">2</td>
+<td align="right">0.0</td>
+<td align="right">0.000000</td>
+<td align="right">4</td>
+<td align="right">0.0000000</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="left">f</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="co"># bar graphics for germination percentage</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a>grp &lt;-<span class="st"> </span>mc_grp<span class="op">$</span>table <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="st">   </span><span class="kw">fplot</span>(<span class="dt">data =</span> .</span>
+<span id="cb4-6"><a href="#cb4-6"></a>       , <span class="dt">type =</span> <span class="st">&quot;bar&quot;</span></span>
+<span id="cb4-7"><a href="#cb4-7"></a>       , <span class="dt">x =</span> <span class="st">&quot;temp&quot;</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a>       , <span class="dt">y =</span> <span class="st">&quot;grp&quot;</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a>       , <span class="dt">groups =</span> <span class="st">&quot;nacl&quot;</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a>       , <span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">150</span>)</span>
+<span id="cb4-11"><a href="#cb4-11"></a>       , <span class="dt">brakes =</span> <span class="dv">30</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a>       , <span class="dt">ylab =</span> <span class="st">&quot;Germination (&#39;%&#39;)&quot;</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a>       , <span class="dt">xlab =</span> <span class="st">&quot;Temperature (ºC)&quot;</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a>       , <span class="dt">glab =</span> <span class="st">&quot;NaCl (MPa)&quot;</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a>       , <span class="dt">legend =</span> <span class="st">&quot;top&quot;</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a>       , <span class="dt">error =</span> <span class="st">&quot;ste&quot;</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a>       , <span class="dt">sig =</span> <span class="st">&quot;sig&quot;</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a>       , <span class="dt">color =</span> F</span>
+<span id="cb4-19"><a href="#cb4-19"></a>       )</span>
+<span id="cb4-20"><a href="#cb4-20"></a></span>
+<span id="cb4-21"><a href="#cb4-21"></a>grp</span></code></pre></div>
+<div class="figure" style="text-align: center">
+<img src="data:image/png;base64,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" alt="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Bar graph with germination percentage in a factorial analisys" width="98%" />
+<p class="caption">
+Germination experiment with <em>Prosopis juliflor</em> under different osmotic potentials and temperatures. Bar graph with germination percentage in a factorial analisys
+</p>
+</div>
+</div>
+<div id="mean-germination-time" class="section level3">
+<h3>Mean germination time</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="co">## Mean Germination Time (MGT)</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co"># analysis of variance</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a></span>
+<span id="cb5-6"><a href="#cb5-6"></a>av &lt;-<span class="st"> </span><span class="kw">aov</span>(<span class="dt">formula =</span> mgt <span class="op">~</span><span class="st"> </span>nacl<span class="op">*</span>temp <span class="op">+</span><span class="st"> </span>rep, <span class="dt">data =</span> gsm)</span>
+<span id="cb5-7"><a href="#cb5-7"></a></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="co"># mean comparison test</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a></span>
+<span id="cb5-10"><a href="#cb5-10"></a>mc_mgt &lt;-<span class="st"> </span><span class="kw">ger_testcomp</span>(<span class="dt">aov =</span> av</span>
+<span id="cb5-11"><a href="#cb5-11"></a>                       , <span class="dt">comp =</span> <span class="kw">c</span>(<span class="st">&quot;temp&quot;</span>, <span class="st">&quot;nacl&quot;</span>)</span>
+<span id="cb5-12"><a href="#cb5-12"></a>                       , <span class="dt">type =</span> <span class="st">&quot;snk&quot;</span>)</span>
+<span id="cb5-13"><a href="#cb5-13"></a></span>
+<span id="cb5-14"><a href="#cb5-14"></a><span class="co"># data result</span></span>
+<span id="cb5-15"><a href="#cb5-15"></a></span>
+<span id="cb5-16"><a href="#cb5-16"></a>mc_mgt<span class="op">$</span>table <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb5-17"><a href="#cb5-17"></a><span class="st">   </span><span class="kw">kable</span>(<span class="dt">caption =</span> <span class="st">&quot;Mean germination time comparison&quot;</span>)</span></code></pre></div>
+<table>
+<caption>Mean germination time comparison</caption>
+<thead>
+<tr class="header">
+<th align="left">temp</th>
+<th align="left">nacl</th>
+<th align="right">mgt</th>
+<th align="right">std</th>
+<th align="right">r</th>
+<th align="right">ste</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="left">sig</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">25</td>
+<td align="left">0</td>
+<td align="right">1.240000</td>
+<td align="right">0.0783156</td>
+<td align="right">4</td>
+<td align="right">0.0391578</td>
+<td align="right">1.140000</td>
+<td align="right">1.320000</td>
+<td align="left">j</td>
+</tr>
+<tr class="even">
+<td align="left">25</td>
+<td align="left">0.5</td>
+<td align="right">1.830000</td>
+<td align="right">0.0901850</td>
+<td align="right">4</td>
+<td align="right">0.0450925</td>
+<td align="right">1.700000</td>
+<td align="right">1.900000</td>
+<td align="left">i</td>
+</tr>
+<tr class="odd">
+<td align="left">25</td>
+<td align="left">1</td>
+<td align="right">2.701218</td>
+<td align="right">0.1512339</td>
+<td align="right">4</td>
+<td align="right">0.0756169</td>
+<td align="right">2.531915</td>
+<td align="right">2.897959</td>
+<td align="left">g</td>
+</tr>
+<tr class="even">
+<td align="left">25</td>
+<td align="left">1.5</td>
+<td align="right">5.442365</td>
+<td align="right">0.0415525</td>
+<td align="right">4</td>
+<td align="right">0.0207763</td>
+<td align="right">5.382979</td>
+<td align="right">5.479167</td>
+<td align="left">c</td>
+</tr>
+<tr class="odd">
+<td align="left">25</td>
+<td align="left">2</td>
+<td align="right">6.523349</td>
+<td align="right">0.3068542</td>
+<td align="right">4</td>
+<td align="right">0.1534271</td>
+<td align="right">6.063830</td>
+<td align="right">6.695652</td>
+<td align="left">b</td>
+</tr>
+<tr class="even">
+<td align="left">30</td>
+<td align="left">0</td>
+<td align="right">1.030000</td>
+<td align="right">0.0258199</td>
+<td align="right">4</td>
+<td align="right">0.0129099</td>
+<td align="right">1.000000</td>
+<td align="right">1.060000</td>
+<td align="left">j</td>
+</tr>
+<tr class="odd">
+<td align="left">30</td>
+<td align="left">0.5</td>
+<td align="right">1.100000</td>
+<td align="right">0.0432049</td>
+<td align="right">4</td>
+<td align="right">0.0216025</td>
+<td align="right">1.060000</td>
+<td align="right">1.160000</td>
+<td align="left">j</td>
+</tr>
+<tr class="even">
+<td align="left">30</td>
+<td align="left">1</td>
+<td align="right">1.898129</td>
+<td align="right">0.0609184</td>
+<td align="right">4</td>
+<td align="right">0.0304592</td>
+<td align="right">1.833333</td>
+<td align="right">1.959184</td>
+<td align="left">i</td>
+</tr>
+<tr class="odd">
+<td align="left">30</td>
+<td align="left">1.5</td>
+<td align="right">2.994362</td>
+<td align="right">0.1138473</td>
+<td align="right">4</td>
+<td align="right">0.0569236</td>
+<td align="right">2.900000</td>
+<td align="right">3.160000</td>
+<td align="left">f</td>
+</tr>
+<tr class="even">
+<td align="left">30</td>
+<td align="left">2</td>
+<td align="right">4.388259</td>
+<td align="right">0.0676715</td>
+<td align="right">4</td>
+<td align="right">0.0338357</td>
+<td align="right">4.326087</td>
+<td align="right">4.446809</td>
+<td align="left">d</td>
+</tr>
+<tr class="odd">
+<td align="left">35</td>
+<td align="left">0</td>
+<td align="right">1.015000</td>
+<td align="right">0.0191485</td>
+<td align="right">4</td>
+<td align="right">0.0095743</td>
+<td align="right">1.000000</td>
+<td align="right">1.040000</td>
+<td align="left">j</td>
+</tr>
+<tr class="even">
+<td align="left">35</td>
+<td align="left">0.5</td>
+<td align="right">1.076250</td>
+<td align="right">0.0291905</td>
+<td align="right">4</td>
+<td align="right">0.0145952</td>
+<td align="right">1.060000</td>
+<td align="right">1.120000</td>
+<td align="left">j</td>
+</tr>
+<tr class="odd">
+<td align="left">35</td>
+<td align="left">1</td>
+<td align="right">1.817607</td>
+<td align="right">0.2398098</td>
+<td align="right">4</td>
+<td align="right">0.1199049</td>
+<td align="right">1.653061</td>
+<td align="right">2.173913</td>
+<td align="left">i</td>
+</tr>
+<tr class="even">
+<td align="left">35</td>
+<td align="left">1.5</td>
+<td align="right">3.370480</td>
+<td align="right">0.0159689</td>
+<td align="right">4</td>
+<td align="right">0.0079844</td>
+<td align="right">3.354167</td>
+<td align="right">3.387755</td>
+<td align="left">e</td>
+</tr>
+<tr class="odd">
+<td align="left">35</td>
+<td align="left">2</td>
+<td align="right">6.984343</td>
+<td align="right">0.3784214</td>
+<td align="right">4</td>
+<td align="right">0.1892107</td>
+<td align="right">6.555556</td>
+<td align="right">7.400000</td>
+<td align="left">a</td>
+</tr>
+<tr class="even">
+<td align="left">40</td>
+<td align="left">0</td>
+<td align="right">1.035000</td>
+<td align="right">0.0191485</td>
+<td align="right">4</td>
+<td align="right">0.0095743</td>
+<td align="right">1.020000</td>
+<td align="right">1.060000</td>
+<td align="left">j</td>
+</tr>
+<tr class="odd">
+<td align="left">40</td>
+<td align="left">0.5</td>
+<td align="right">2.327648</td>
+<td align="right">0.0512449</td>
+<td align="right">4</td>
+<td align="right">0.0256225</td>
+<td align="right">2.255319</td>
+<td align="right">2.375000</td>
+<td align="left">h</td>
+</tr>
+<tr class="even">
+<td align="left">40</td>
+<td align="left">1</td>
+<td align="right">2.728780</td>
+<td align="right">0.1714562</td>
+<td align="right">4</td>
+<td align="right">0.0857281</td>
+<td align="right">2.520833</td>
+<td align="right">2.940000</td>
+<td align="left">g</td>
+</tr>
+<tr class="odd">
+<td align="left">40</td>
+<td align="left">1.5</td>
+<td align="right">3.287500</td>
+<td align="right">0.1012651</td>
+<td align="right">4</td>
+<td align="right">0.0506326</td>
+<td align="right">3.166667</td>
+<td align="right">3.400000</td>
+<td align="left">e</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="co"># bar graphics for mean germination time</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a></span>
+<span id="cb6-4"><a href="#cb6-4"></a>mgt &lt;-<span class="st"> </span>mc_mgt<span class="op">$</span>table <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="st">   </span><span class="kw">fplot</span>(<span class="dt">data =</span> .</span>
+<span id="cb6-6"><a href="#cb6-6"></a>       , <span class="dt">type =</span> <span class="st">&quot;bar&quot;</span> </span>
+<span id="cb6-7"><a href="#cb6-7"></a>       , <span class="dt">x =</span> <span class="st">&quot;temp&quot;</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a>       , <span class="dt">y =</span> <span class="st">&quot;mgt&quot;</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a>       , <span class="dt">groups =</span> <span class="st">&quot;nacl&quot;</span></span>
+<span id="cb6-10"><a href="#cb6-10"></a>       , <span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">9</span>)</span>
+<span id="cb6-11"><a href="#cb6-11"></a>       , <span class="dt">brakes =</span> <span class="dv">1</span></span>
+<span id="cb6-12"><a href="#cb6-12"></a>       , <span class="dt">ylab =</span> <span class="st">&quot;Mean germination time (days)&quot;</span></span>
+<span id="cb6-13"><a href="#cb6-13"></a>       , <span class="dt">xlab =</span> <span class="st">&quot;Temperature (ºC)&quot;</span></span>
+<span id="cb6-14"><a href="#cb6-14"></a>       , <span class="dt">glab =</span> <span class="st">&quot;NaCl (MPa)&quot;</span></span>
+<span id="cb6-15"><a href="#cb6-15"></a>       , <span class="dt">legend =</span> <span class="st">&quot;top&quot;</span></span>
+<span id="cb6-16"><a href="#cb6-16"></a>       , <span class="dt">sig =</span> <span class="st">&quot;sig&quot;</span></span>
+<span id="cb6-17"><a href="#cb6-17"></a>       , <span class="dt">error =</span> <span class="st">&quot;ste&quot;</span></span>
+<span id="cb6-18"><a href="#cb6-18"></a>       , <span class="dt">color =</span> T</span>
+<span id="cb6-19"><a href="#cb6-19"></a>       )</span>
+<span id="cb6-20"><a href="#cb6-20"></a></span>
+<span id="cb6-21"><a href="#cb6-21"></a>mgt</span></code></pre></div>
+<div class="figure" style="text-align: center">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASAAAAEgCAMAAAAjXV6yAAABL1BMVEUAAAAAADoAAGYAOjoAOpAAZrYAsPYAv30zMzM6AAA6ADo6AGY6OgA6OpA6ZrY6kNtNTU1NTW5NTY5NbqtNjshmAABmADpmAGZmOpBmZmZmZrZmkJBmkLZmkNtmtrZmtttmtv9uTU1uTW5uTY5ubo5ubqtuq8huq+SOTU2OTW6OTY6Obk2ObquOyP+QOgCQOjqQOmaQkDqQkGaQkLaQtpCQttuQtv+Q27aQ2/+jpQCrbk2rbm6rbo6rjk2ryKur5OSr5P+2ZgC2Zjq2Zma2kGa2kJC2tra2ttu22/+2///Ijk3I///bkDrbkGbbtmbbtpDbtrbb29vb2//b/7bb///kq27k///na/P4dm3/tmb/tpD/yI7/25D/27b/29v/5Kv//7b//8j//9v//+T///+KasDSAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAO/klEQVR4nO2djX/cNhnHfSOhu5XtspV060bHFSgNhWQjdCxrgfU6KLS5MkaTJrcczeXi//9vQI/eLFmSJdmyzy/6fT5t2tjPyf6e9OjtkZSkUYVKNv0AbVcEZFEEZFEEZFEEZFEEZFESZdGmv6G2KwKyKAKyKAKyKAKyKAKyKAKyqC5AXo2Kcg2QAEm4pGG7paSSc51MT/+NRvaHv6GTKYmf6mRP4ywCKk4jArKk4QPo+688LvcJ0Gp3G/69eOeFcGWO3NPoKE2X7x3R33x3lC7H+J7V7tbJ+gA7udFRZrK4K35yrwAl01QGtD7YOgFI0wzQfIJojTGQ5RgATfBvRarzifDJvQL02fsnMqAZ8EFvvHXCAC1vvgAyd4DB/A4HtNqdZp+W5ba+AZrOJgTQcoyKzUR8bfbSGNly/PknJ+n6i0MJEDWCfLftCgjlWvIdOADK7oVyn32NVkD4S3UFxG7OpUEBwVUECINBpUbICvSfxE8tx7/8ElF8/98c0CwzIv9zA7Q+mKZzgWYRIOHemZBd7YAWwotaAfGbc2lQQOA+EKC3JwSJgJ4CWo4n+O/pfJouJgvupNGnMiOgn/nsYkCrj1+I328hoOze9RdClWAFNBs9cs9B/OZ8GgzQ6vYR9kELXDOpOYgDWmwjxguegyh9Wp05A1oip4eSdAKU3YvKWpJkX3AtRSyfBgOEMjEuYugNERLmg9Bz5QGtPnn98QsJEDPyAYQ+wBlQdi8kInzDtQDKp8EBIc/7Drw4eiD0lnNai3F3xAGlzw63UwkQN6o9B2FlPqIeJ51LgwPCXgpeE7d1lHYQc9LIW6EKSwbEjDycdDkftFlA+O1myJl8jf87y7Wk56SaJ8RkH8SN3Kt5sHavxdi9kFfXX9ZbzefTcO6LiY1Ak4SCEL4dBC8wl/o24QFp0nDvrIr9CIdb+tSSdtSrqeWG5afiJw8P0HCHO2pRBGT75DhoPxBFQBZFQBZFQBZFQBZFQBZFQBYZ2gdRXJv+htquCMiiCMiiCMiiCMiiCMiiCMiiPKD1Dz+caG8cqiRAb59BoEYy+uC/m3qc9kkE9Gr8kzufPX/+jzs/G901GgxNAqBXv+CFa/33DzbxMG1UBujHP4u/X9L/Xd7b+ei40SdqmTig9T/lC//B2elqbz89vfWm2WdqlSzV/OX9N+nV75428yytlAxotTtd7YqRaxmgd4cmLaDZNsQECXEXuIh9yHLQu+lwpAWEMhCEsIgBwchJ//ZJBESFS9gkF3OfXj08zhkNQVpA64MJxIvNhCKG/M/pz/NGQ5DeBy3HyTYLsye62NnJavkIyNFoCDL4oFFhoN3gAeGAzC3zcEcElJJQc1M4YgSEBYjkij5vNAQZAc0TVJHJNZliNATpAcEaHhzMutBmocEDWu3qi1beaAiK7SCLjC1pkCkfDR4Q6outD6bSQl2t0RBk6s2nswlZAUYljUlHQLt4/axQheHePO+tDh4QDHQgOvMsB+Eh1zgexAWL12bieqksB4njtEOQazV/tRfHg4p0+aun6cVHsYiB8IrxJNcOurglzot1ABDfJ6Oq9DkI7zAhtoO6loOEfTIqyljNp3JP9WJnh0+LdQCQsE9GRbkC0hq1WXyfjIoqLGLdHVEU9smoKEMtBvwTU1esA4CEfTIqqqfDHcI+GRWlANLHB+mN3BUkt/so21yjotQc9KP0KnK8Wc7IXY0DCiZNEXsmxCg+0/rpgQPCUa5/ev780BjlWgbQYeFUZHulddK2OOkSgPCWi9v2G1snUy1WGGlfBtC0o+WsoWoeb+FjHuSuRWGWnzgCOt0B7eeM3NV7QKCLCmPSuHQ1XMSaBiSESXfDSTcNiIYolhuTxtV8g3zCreY2AJqjrupcareIcfbt74slZ2dn8Kf6vkiGaZ+t1yRUOtOFsFJj8IBwnPRUHjB7+UA1aq+aB3T95Klq1F7VXcTmUMSkEUVpqU83AJ3VCIiMKBpnTUoBanR7kNoBuRn5KQKyqE+AQkeYNb4NT82AbJ0Cf0BnwWoVjwRrreadjJzVN0BwQoOLkbNws6RHgMyTzrKRs/jz9gVQcCfdM0DiYRlFRs7qG6B6nHSPAGmc9PXjMvFBsCgGWgx9AySdI0D0cr/EmDS0p3Bu7BsgFqYoBJI/PNYY2cRH6fsGSNXl/b/SIuYzJs1bCwMAdG8fR9vLRjb1ExDZ+SVXxOTtcWIRU3T1hzKAwEnjjm/fAGmiXF+WKWK9reY1gK72qqwX6xegOR/cMo0KDRxQ7GqIamZMOgKyKAIyiozSR0BaCXMZEZBO/Cyv/gEKM+TaX0CB5sX6CyhQOygUIMscizbpunNQBMTkOi8GgdK+i3r7C0gdD4LevGpkUQhA6FFGh60DpEqKwGsQEES52fbD0ibdNKCrPbYSwWNMOgAgXLpKrH+vHdA8F4IHGwtc+26XHAAQOZxcmYSyJ10zIP2y8Jeei1n6C8iwscAGAOFHaGMtlgcEs6rXf2m+ml/tbrfSSatF7LTE3h19rubzTlpvZFF/+2KuRhZFQBb1FJB26llvZFFPAXkYWdRfQIE2WAoDqFRw/mAAlV3C0I2p5xCAGrZT1fIh15YCcjWyqMeAdNM+14/380YW9ReQdsPt050IiEmz4XZ6+ZvfR0BM6obb6fWTbx9vYMjV80Uh5A8/dN0+SNlwOz190AEfhGeE8VP7AuJkFekBKRtuX95/0wFAC75Hr3fOY2QVOVbzZIMltjtFA4Dm5Ovxe1HaxJ14A8rIKnJvBzWag9jDegLiecATUEZWUUvbQSxG37OIcafgC8i8g2E7w1/gC8KP4Ouk0YtiSr5FzLzra0v7YuVyEK6MSvgugayiloa/lASUJe1px8kqqnNZeIcAmeUa/qI1sqi/gFyNLGo7IJiUfGSb968DEEu45YDcYo9qmPbhCTcOSBO5XmDnFntUQw7iCTfeF9MkWGAnh9aYpgVqAMQT7gygormTGiLtuwIoiz0CO2zrCkjT1bjYcV6SyRNuJaBsS+LMSWd26mc6djUuf33MdrtNm3DSTHUCymKPvAHpuxoASTYyiCVcBRB1B7UCAuFxd29A+q4GyUGOY9KQcGlAftW1YOcE6DAhp/JA55Q4E39AGid9ec81BI8nXB4Qd5o1ABqjr460fuZsdr1EEdONrTnvvMASrgIoqQ/QVClnAZw0VmNhwH7VtZ+dbnf9AE661BmHHQCU5OzUzzT4IKWP6xcGTNc6NwWI99yaAlSpsypUQb6AfF5Um7QXIN2Dmt81QF+Mvl5yAwn+8gfE1BAg+pw3/AFVGpMmbBoFVC7nYTjlAFWa1dClW3MRaxxQ0USaaKR9zCEAKuekBwTIpgjIoo4DYiMFVQCpZ/vojLSP2XJAQuunAiDN2T46I+1jth3QN1RVAOnO9tEZaR9zA4CYNgno8t6OLQy4OiCfFy1rFwSQerYP9ORh7bxspH/KIQBSzva5gOFW7XiQcnDhMADpRMaDrGPSgwV0/ZgfwdY6QKxl05yTVleMXe09UIxA1YsYc+6FA0lmO+HxG3TSdGOBrCkEO27bANFxRDdAWrBJfnzGtYjZAfEmRKBqHn6gap7V9BIfHaDiBqpLEeN2xYDU02z9cl5NgMxHGTNAhek6FTE3QIqddmSwqSJmWb9QBVCWEwIAciiaQYsYbQdN03lxaOwmACl2xU6vLkDFioAioAioOUBkEjYCMgCa0cZ2BGQAxDQwQP5RrlUA0ULqDYhGWGwAkPOCOqGV7w2IBZDwQuoJiNm5AmI4QwBynnpOzs/P4c+5N6CZsrWMKyAlMscJUIYzTA7SAMqCXGVA56UAqXIDpIJ1zEH87iA+SDOfcaELJK8OSDMK4DzcUTAB2NCAmbif9Id/C5iDZN9F//ID5Di+kih311bN0yImjUmXBoRNDHYFL5q4vqgCiKZne9AAgESjSoCMdkWAzn0TTPwe1BWQrh0UAWXSbrAUAWXSbbAUAeUA5TZYioCk36obLGmNhgtI2WApAio33BEBRUDVYhQHC8g1RnGogJxjFCOgCMgxRjECyl3KxyhGQLGarwjoam/nFjtufuCAYEO4JD/kCrtMavbuGCQg8D/KpMbVw2Pd3h3DBJTC5EqO0eX9N2Kc9JCkBUQKmsBI3ljALsetBzpkp8lc64PMB2U5KHTCXbHT5CBxOEj2QSET7opdbtA+P1gG6xCyWmyIkmoxzVCi1A4aoiztoCivrsYQFQFZFAwQXdwqHb/uIrpRo7evo3be6dFN+p3TCwWILW6Vjl93EN2oUe7zudt5p5eSw4rc0wsFiC5ulY9fdxR6Wd/2FrMrkR4+rMg9vZA+COWi7Ph1D6Gv0rfFzuz80yOHFbmnFxAQNCrl49edhDdq9O3zMTv/9MhhRe7phQOULW719QvoSUvlIGbgkx49rGgDOUhYvOntOF/ul/JBLCGf9OhhRc37IMpHPn7dQTSve/f5qJ13eimp5t3TCwWILW6V9l10NAQD73YQtfNOb1PtoN4qArIoArIoArIoArIoArKoF4C+/8r+m7JqChAf0C1e06jX//5VePk72Es/wYGDsGs8Hllf3C3zlBo1mYPUDVyC2M0nKYS/zybkRD4EaUp/G0LdB4TXas7wfiwzEn5KztApmVheGwBEjw9evvdonCQTWGA0JadewHuxizf/iH7gxUf4jgnbL5tcEE8gxlQwoNfiKhzbAmVXNQ+IHR9MDrpIyGkXyzG89bZwcZuuMYaLyI4DggviCcSrXQAB2WciZ5pZmMmr5gGx44PJQRf0tAv2U7r49oQYyYCm8gnEyzE4G+yk5YXRhi1+fNU8IHZ8cLbJPGUAryxdJCGTIxkQ/BRPICaAhM9n6i4gGsivByReXO2OjpQchAEJawEEQGwl4Oo2TqergNjBuDIgXMRuvpAu4oV9C00OEs/WFQAxcPQEn64CYscH5wAxJy1cBA7L8egIcgYEb68P6AXxBGLipInEdlB3nTQ7PjhXxA5JI1u8CBGBo69hmSi6BJX957ePGOTsBGJp7c2MtaQ7Wc0XqEKzzmBKHFF1dR+QoVPRxa5GgSp1DF4p0cvoAz8t/3mSWgKomvow3NFZRUAWRUAWRUAWRUAWRUAWRUAWRUAWRUAWRUAW/R+3UuBnjEHVhAAAAABJRU5ErkJggg==" alt="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Bar graph for mean germination time in a factorial analisys." width="98%" />
+<p class="caption">
+Germination experiment with <em>Prosopis juliflor</em> under different osmotic potentials and temperatures. Bar graph for mean germination time in a factorial analisys.
+</p>
+</div>
+<blockquote>
+<p>You can add at each plot different arguments as the standard error, significance of the mean test, color, labels and limits. The resulted graphics are performed for publications and allows to insert math expression in the titles.</p>
+</blockquote>
+</div>
+</div>
+<div id="cumulative-analysis-of-germination" class="section level2">
+<h2>Cumulative analysis of germination</h2>
+<p>The cumulative analysis of the germination allows to observe the evolution of the germination process, being able to be expressed as the percentage of germination or with the relative germination.</p>
+<div id="in-time-analysis-for-nacl" class="section level3">
+<h3>In time analysis for NaCl</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="co"># data frame with percentage or relative germination in time by NaCl</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a></span>
+<span id="cb7-4"><a href="#cb7-4"></a>git &lt;-<span class="st"> </span><span class="kw">ger_intime</span>(<span class="dt">Factor =</span> <span class="st">&quot;nacl&quot;</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a>                  , <span class="dt">SeedN =</span> <span class="st">&quot;seeds&quot;</span></span>
+<span id="cb7-6"><a href="#cb7-6"></a>                  , <span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a>                  , <span class="dt">method =</span> <span class="st">&quot;percentage&quot;</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a>                  , <span class="dt">data =</span> fb</span>
+<span id="cb7-9"><a href="#cb7-9"></a>                  )</span>
+<span id="cb7-10"><a href="#cb7-10"></a></span>
+<span id="cb7-11"><a href="#cb7-11"></a><span class="co"># data result</span></span>
+<span id="cb7-12"><a href="#cb7-12"></a></span>
+<span id="cb7-13"><a href="#cb7-13"></a>git <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-14"><a href="#cb7-14"></a><span class="st">   </span><span class="kw">head</span>(<span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb7-15"><a href="#cb7-15"></a><span class="st">   </span><span class="kw">kable</span>(<span class="dt">caption =</span> <span class="st">&quot;Cumulative germination by nacl factor&quot;</span>)</span></code></pre></div>
+<table>
+<caption>Cumulative germination by nacl factor</caption>
+<thead>
+<tr class="header">
+<th align="left">nacl</th>
+<th align="right">evaluation</th>
+<th align="right">mean</th>
+<th align="right">r</th>
+<th align="right">std</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">ste</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">0</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+<td align="right">16</td>
+<td align="right">0.0000000</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">0.5</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+<td align="right">16</td>
+<td align="right">0.0000000</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+<td align="right">16</td>
+<td align="right">0.0000000</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">1.5</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+<td align="right">16</td>
+<td align="right">0.0000000</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+<td align="right">16</td>
+<td align="right">0.0000000</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">0</td>
+<td align="right">1</td>
+<td align="right">92.500</td>
+<td align="right">16</td>
+<td align="right">9.4516313</td>
+<td align="right">68</td>
+<td align="right">100</td>
+<td align="right">2.3629078</td>
+</tr>
+<tr class="odd">
+<td align="left">0.5</td>
+<td align="right">1</td>
+<td align="right">57.250</td>
+<td align="right">16</td>
+<td align="right">35.5818306</td>
+<td align="right">12</td>
+<td align="right">96</td>
+<td align="right">8.8954576</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="right">1</td>
+<td align="right">14.500</td>
+<td align="right">16</td>
+<td align="right">12.9099445</td>
+<td align="right">0</td>
+<td align="right">40</td>
+<td align="right">3.2274861</td>
+</tr>
+<tr class="odd">
+<td align="left">1.5</td>
+<td align="right">1</td>
+<td align="right">0.375</td>
+<td align="right">16</td>
+<td align="right">0.8062258</td>
+<td align="right">0</td>
+<td align="right">2</td>
+<td align="right">0.2015564</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="right">1</td>
+<td align="right">0.000</td>
+<td align="right">16</td>
+<td align="right">0.0000000</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0.0000000</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="co"># graphic germination in time by NaCl</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a></span>
+<span id="cb8-4"><a href="#cb8-4"></a>nacl &lt;-<span class="st"> </span>git <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="st">   </span><span class="kw">fplot</span>(<span class="dt">data =</span> .</span>
+<span id="cb8-6"><a href="#cb8-6"></a>        , <span class="dt">type =</span> <span class="st">&quot;line&quot;</span></span>
+<span id="cb8-7"><a href="#cb8-7"></a>        , <span class="dt">x =</span> <span class="st">&quot;evaluation&quot;</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a>        , <span class="dt">y =</span> <span class="st">&quot;mean&quot;</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a>        , <span class="dt">groups =</span> <span class="st">&quot;nacl&quot;</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a>        , <span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">110</span>)</span>
+<span id="cb8-11"><a href="#cb8-11"></a>        , <span class="dt">brakes =</span> <span class="dv">10</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a>        , <span class="dt">ylab =</span> <span class="st">&quot;Germination (&#39;%&#39;)&quot;</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a>        , <span class="dt">xlab =</span> <span class="st">&quot;Day&quot;</span></span>
+<span id="cb8-14"><a href="#cb8-14"></a>        , <span class="dt">glab =</span> <span class="st">&quot;NaCl (MPa)&quot;</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a>        , <span class="dt">legend =</span> <span class="st">&quot;top&quot;</span></span>
+<span id="cb8-16"><a href="#cb8-16"></a>        , <span class="dt">color =</span> T</span>
+<span id="cb8-17"><a href="#cb8-17"></a>        , <span class="dt">error =</span> <span class="st">&quot;ste&quot;</span></span>
+<span id="cb8-18"><a href="#cb8-18"></a>        )</span>
+<span id="cb8-19"><a href="#cb8-19"></a>nacl</span></code></pre></div>
+<div class="figure" style="text-align: center">
+<img src="data:image/png;base64,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" alt="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Line graph from cumulative germination under different osmotic potentials." width="98%" />
+<p class="caption">
+Germination experiment with <em>Prosopis juliflor</em> under different osmotic potentials and temperatures. Line graph from cumulative germination under different osmotic potentials.
+</p>
+</div>
+</div>
+<div id="in-time-analysis-for-temperature" class="section level3">
+<h3>In time analysis for temperature</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a></span>
+<span id="cb9-2"><a href="#cb9-2"></a><span class="co"># data frame with percentage or relative germination in time by temperature</span></span>
+<span id="cb9-3"><a href="#cb9-3"></a></span>
+<span id="cb9-4"><a href="#cb9-4"></a>git &lt;-<span class="st"> </span><span class="kw">ger_intime</span>(<span class="dt">Factor =</span> <span class="st">&quot;temp&quot;</span></span>
+<span id="cb9-5"><a href="#cb9-5"></a>                  , <span class="dt">SeedN =</span> <span class="st">&quot;seeds&quot;</span></span>
+<span id="cb9-6"><a href="#cb9-6"></a>                  , <span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span></span>
+<span id="cb9-7"><a href="#cb9-7"></a>                  , <span class="dt">method =</span> <span class="st">&quot;percentage&quot;</span></span>
+<span id="cb9-8"><a href="#cb9-8"></a>                  , <span class="dt">data =</span> fb) </span>
+<span id="cb9-9"><a href="#cb9-9"></a></span>
+<span id="cb9-10"><a href="#cb9-10"></a><span class="co"># data result</span></span>
+<span id="cb9-11"><a href="#cb9-11"></a></span>
+<span id="cb9-12"><a href="#cb9-12"></a>git <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb9-13"><a href="#cb9-13"></a><span class="st">   </span><span class="kw">head</span>(<span class="dv">10</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb9-14"><a href="#cb9-14"></a><span class="st">   </span><span class="kw">kable</span>(<span class="dt">caption =</span> <span class="st">&quot;Cumulative germination by temperature factor&quot;</span>)</span></code></pre></div>
+<table>
+<caption>Cumulative germination by temperature factor</caption>
+<thead>
+<tr class="header">
+<th align="left">temp</th>
+<th align="right">evaluation</th>
+<th align="right">mean</th>
+<th align="right">r</th>
+<th align="right">std</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">ste</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">25</td>
+<td align="right">0</td>
+<td align="right">0.0</td>
+<td align="right">20</td>
+<td align="right">0.00000</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0.000000</td>
+</tr>
+<tr class="even">
+<td align="left">30</td>
+<td align="right">0</td>
+<td align="right">0.0</td>
+<td align="right">20</td>
+<td align="right">0.00000</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0.000000</td>
+</tr>
+<tr class="odd">
+<td align="left">35</td>
+<td align="right">0</td>
+<td align="right">0.0</td>
+<td align="right">20</td>
+<td align="right">0.00000</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0.000000</td>
+</tr>
+<tr class="even">
+<td align="left">40</td>
+<td align="right">0</td>
+<td align="right">0.0</td>
+<td align="right">20</td>
+<td align="right">0.00000</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0.000000</td>
+</tr>
+<tr class="odd">
+<td align="left">25</td>
+<td align="right">1</td>
+<td align="right">20.1</td>
+<td align="right">20</td>
+<td align="right">31.25094</td>
+<td align="right">0</td>
+<td align="right">86</td>
+<td align="right">6.987922</td>
+</tr>
+<tr class="even">
+<td align="left">30</td>
+<td align="right">1</td>
+<td align="right">40.1</td>
+<td align="right">20</td>
+<td align="right">45.10327</td>
+<td align="right">0</td>
+<td align="right">100</td>
+<td align="right">10.085399</td>
+</tr>
+<tr class="odd">
+<td align="left">35</td>
+<td align="right">1</td>
+<td align="right">45.2</td>
+<td align="right">20</td>
+<td align="right">44.09750</td>
+<td align="right">0</td>
+<td align="right">100</td>
+<td align="right">9.860501</td>
+</tr>
+<tr class="even">
+<td align="left">40</td>
+<td align="right">1</td>
+<td align="right">26.3</td>
+<td align="right">20</td>
+<td align="right">37.31671</td>
+<td align="right">0</td>
+<td align="right">98</td>
+<td align="right">8.344270</td>
+</tr>
+<tr class="odd">
+<td align="left">25</td>
+<td align="right">2</td>
+<td align="right">48.6</td>
+<td align="right">20</td>
+<td align="right">45.07818</td>
+<td align="right">0</td>
+<td align="right">100</td>
+<td align="right">10.079787</td>
+</tr>
+<tr class="even">
+<td align="left">30</td>
+<td align="right">2</td>
+<td align="right">62.4</td>
+<td align="right">20</td>
+<td align="right">45.70662</td>
+<td align="right">0</td>
+<td align="right">100</td>
+<td align="right">10.220310</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="co"># graphic germination in time by temperature</span></span>
+<span id="cb10-3"><a href="#cb10-3"></a></span>
+<span id="cb10-4"><a href="#cb10-4"></a>temp &lt;-<span class="st"> </span>git <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb10-5"><a href="#cb10-5"></a><span class="st">   </span><span class="kw">fplot</span>(<span class="dt">data =</span> .</span>
+<span id="cb10-6"><a href="#cb10-6"></a>        , <span class="dt">type =</span> <span class="st">&quot;line&quot;</span></span>
+<span id="cb10-7"><a href="#cb10-7"></a>        , <span class="dt">x =</span> <span class="st">&quot;evaluation&quot;</span></span>
+<span id="cb10-8"><a href="#cb10-8"></a>        , <span class="dt">y =</span> <span class="st">&quot;mean&quot;</span></span>
+<span id="cb10-9"><a href="#cb10-9"></a>        , <span class="dt">groups =</span> <span class="st">&quot;temp&quot;</span></span>
+<span id="cb10-10"><a href="#cb10-10"></a>        , <span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">110</span>)</span>
+<span id="cb10-11"><a href="#cb10-11"></a>        , <span class="dt">brakes =</span> <span class="dv">10</span></span>
+<span id="cb10-12"><a href="#cb10-12"></a>        , <span class="dt">ylab =</span> <span class="st">&quot;Germination (&#39;%&#39;)&quot;</span></span>
+<span id="cb10-13"><a href="#cb10-13"></a>        , <span class="dt">xlab =</span> <span class="st">&quot;Day&quot;</span></span>
+<span id="cb10-14"><a href="#cb10-14"></a>        , <span class="dt">glab =</span> <span class="st">&quot;Temperature (&#39;°C&#39;)&quot;</span></span>
+<span id="cb10-15"><a href="#cb10-15"></a>        , <span class="dt">legend =</span> <span class="st">&quot;top&quot;</span></span>
+<span id="cb10-16"><a href="#cb10-16"></a>        , <span class="dt">color =</span> F</span>
+<span id="cb10-17"><a href="#cb10-17"></a>        ) </span>
+<span id="cb10-18"><a href="#cb10-18"></a>temp</span></code></pre></div>
+<div class="figure" style="text-align: center">
+<img src="data:image/png;base64,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" alt="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Line graph from cumulative germination under different temperatures." width="98%" />
+<p class="caption">
+Germination experiment with <em>Prosopis juliflor</em> under different osmotic potentials and temperatures. Line graph from cumulative germination under different temperatures.
+</p>
+</div>
+</div>
+<div id="in-time-using-ggplot2" class="section level3">
+<h3>In time using ggplot2</h3>
+<p>As the function <code>fplot()</code> is build using <a href="https://ggplot2.tidyverse.org/">ggplot2</a> <span class="citation">(Wickham et al., <a href="#ref-R-ggplot2" role="doc-biblioref">2020</a>)</span>. You can add more arguments for modify the graphics using <code>+</code>.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a></span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb11-3"><a href="#cb11-3"></a></span>
+<span id="cb11-4"><a href="#cb11-4"></a>git &lt;-<span class="st"> </span><span class="kw">ger_intime</span>(<span class="dt">Factor =</span> <span class="st">&quot;temp&quot;</span></span>
+<span id="cb11-5"><a href="#cb11-5"></a>                  , <span class="dt">SeedN =</span> <span class="st">&quot;seeds&quot;</span></span>
+<span id="cb11-6"><a href="#cb11-6"></a>                  , <span class="dt">evalName =</span> <span class="st">&quot;D&quot;</span></span>
+<span id="cb11-7"><a href="#cb11-7"></a>                  , <span class="dt">method =</span> <span class="st">&quot;percentage&quot;</span></span>
+<span id="cb11-8"><a href="#cb11-8"></a>                  , <span class="dt">data =</span> fb</span>
+<span id="cb11-9"><a href="#cb11-9"></a>                  ) </span>
+<span id="cb11-10"><a href="#cb11-10"></a></span>
+<span id="cb11-11"><a href="#cb11-11"></a>ggplot &lt;-<span class="st"> </span>git <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb11-12"><a href="#cb11-12"></a><span class="st">   </span><span class="kw">fplot</span>(<span class="dt">data =</span> .</span>
+<span id="cb11-13"><a href="#cb11-13"></a>        , <span class="dt">type =</span> <span class="st">&quot;line&quot;</span></span>
+<span id="cb11-14"><a href="#cb11-14"></a>        , <span class="dt">x =</span> <span class="st">&quot;evaluation&quot;</span></span>
+<span id="cb11-15"><a href="#cb11-15"></a>        , <span class="dt">y =</span> <span class="st">&quot;mean&quot;</span></span>
+<span id="cb11-16"><a href="#cb11-16"></a>        , <span class="dt">groups =</span> <span class="st">&quot;temp&quot;</span></span>
+<span id="cb11-17"><a href="#cb11-17"></a>        , <span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">110</span>)</span>
+<span id="cb11-18"><a href="#cb11-18"></a>        , <span class="dt">brakes =</span> <span class="dv">10</span></span>
+<span id="cb11-19"><a href="#cb11-19"></a>        , <span class="dt">ylab =</span> <span class="st">&quot;Germination (&#39;%&#39;)&quot;</span></span>
+<span id="cb11-20"><a href="#cb11-20"></a>        , <span class="dt">xlab =</span> <span class="st">&quot;Day&quot;</span></span>
+<span id="cb11-21"><a href="#cb11-21"></a>        , <span class="dt">glab =</span> <span class="st">&quot;Temperature (&#39;°C&#39;)&quot;</span></span>
+<span id="cb11-22"><a href="#cb11-22"></a>        , <span class="dt">legend =</span> <span class="st">&quot;top&quot;</span></span>
+<span id="cb11-23"><a href="#cb11-23"></a>        , <span class="dt">color =</span> F</span>
+<span id="cb11-24"><a href="#cb11-24"></a>        ) <span class="op">+</span></span>
+<span id="cb11-25"><a href="#cb11-25"></a><span class="st">   </span><span class="kw">scale_x_continuous</span>(<span class="dt">n.breaks =</span> <span class="dv">10</span></span>
+<span id="cb11-26"><a href="#cb11-26"></a>                      , <span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">11</span>)</span>
+<span id="cb11-27"><a href="#cb11-27"></a>                      ) </span>
+<span id="cb11-28"><a href="#cb11-28"></a></span>
+<span id="cb11-29"><a href="#cb11-29"></a>ggplot</span></code></pre></div>
+<p><img src="data:image/png;base64,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" width="98%" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references hanging-indent">
+<div id="ref-R-ggplot2">
+<p>Wickham, H., Chang, W., Henry, L., Pedersen, T. L., Takahashi, K., Wilke, C., Woo, K., Yutani, H., &amp; Dunnington, D. (2020). <em>Ggplot2: Create elegant data visualisations using the grammar of graphics</em>. <a href="https://CRAN.R-project.org/package=ggplot2">https://CRAN.R-project.org/package=ggplot2</a></p>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
