@@ -1,102 +1,211 @@
 ## ----setup, include=FALSE-----------------------------------------------------
-library(shiny)
-library(knitr)
+source("http://lozanoisla.com/lectures/setup.r")
 
-knitr::opts_chunk$set(
-    fig.align = "center" # Center images in the export file
-  , out.width = "98%" # Figure width in html
-  , echo = FALSE # Avoid print code in the export file
-  , message = FALSE # Avoid print messages in the export file
-  , warning = FALSE # Avoid print messages in the export file
-  , collapse = TRUE
-  , comment = "#>"
-  )
+## ---- echo=TRUE---------------------------------------------------------------
+# Install packages and dependencies
 
-options(
-    OutDec= "." # Use "." instead of "," in the decimal values
-  , scipen = 99 # Avoid use "6e-04"
-  , knitr.kable.NA = "" # NA values will appear as empty cell
-  , knitr.table.format = "pipe" # Format for export tables
-  , citr.use_betterbiblatex = FALSE # For zotero addin 
-  ) 
+library(GerminaR)
 
-## ----echo=FALSE---------------------------------------------------------------
-HTML('
+# load data
 
-<div id=footer style="width:100%; margin:auto;">
+fb <- prosopis %>% 
+   dplyr::mutate(across(c(nacl, temp, rep), as.factor))
 
-<div style="display:inline-block; width:32%">
-<p style="text-align:center">
-<a target="_blank" href="https://CRAN.R-project.org/package=GerminaR"><img src="https://flavjack.github.io/GerminaR/reference/figures/logo.png" style="height:70px" title="R cran" alt="GerminaR"></a> 
-<span style="display:block;"><small>GerminaR</small></span>
-</p></div>
+# Prosopis data set
 
-<div style="display:inline-block; width:32%">
-<p style="text-align:center">
-<a target="_blank" href="https://flavjack.github.io/GerminaR/"><img src="https://pkgdown.r-lib.org/reference/figures/logo.png" style="height:70px" title="GerminaR" alt="GerminaR"></a> 
-<span style="display:block;"><small>Project</small></span>
-</p></div>
+fb %>% 
+   head(10) %>% 
+   kable(caption = "Prosopis dataset")
 
-<div style="display:inline-block; width:32%">
-<p style="text-align:center">
-<a target="_blank" href="https://flavjack.shinyapps.io/germinaquant/"><img src="https://flavjack.github.io/GerminaR/reference/figures/germinaquant.png" style="height:70px" title="GerminaQuant" alt="GerminaQuant for R"></a>
-<span style="display:block;"><small>GerminaQuant</small></span>
-</p></div>
+## ---- echo=TRUE---------------------------------------------------------------
 
-</div>
+# germination analysis (ten variables)
 
-')
+gsm <- ger_summary(SeedN = "seeds"
+                   , evalName = "D"
+                   , data = fb
+                   )
 
-## ----dtorg, fig.cap='Layout for germination evaluation process. The factor column (red) are according the experimental design. The seed number column (green) for the number of seed sown and the evaluation columns (blue) for accounting the germination.',fig.align='center', out.width='100%'----
-knitr::include_graphics('files/dtorg.png')
+# Prosopis data set processed
 
-## ----tabs---------------------------------------------------------------------
-tab <- data.frame( 
-  
-"Tabs" = c(
-  "Presentation",
-  "User Manual",
-  "Fieldbook",
-  "Germination",
-  "Boxplot",
-  "Statistics",
-  "Graphics",
-  "InTime",
-  "Tools"),
+gsm %>% 
+  head(10) %>% 
+  mutate(across(where(is.numeric), ~round(., 2))) %>% 
+   kable(caption = "Function ger_summary performe ten germination indices")
 
-"Description" = c(
-  'Presentation of the application, principal characteristics and contributors',
-  "User manual explain the meaning of each index and how to collect and process your data",
-  "Interface to upload the field book and choose the parameter for the germination analysis, GerminaQuant allows to upload the data from google sheet or excel file",
-  "Calculate automatically the germination variables and export the data file.",
-  "Interface to explore your data and their distribution",
-  "Interface to choose the variables according the experimental design for analysis of variance and summarize the information according the principal mean comparison test",
-  "Graphic the mean comparison test for the variables selected in the statistical analysis and plot the information in customized bar or line plot.",
-  "Selecting the factor from your experiment, allows plotting the germination process in time.",
-  "Tool for calculate the osmotic potential for any salt or PEG for germination experiments")
-  
-)
 
-knitr::kable(
-  tab, 
-  booktabs = TRUE,
-  caption = 'Name and description of each tab of GerminaQuant to evaluate and analyze the germination process.'
-  )
+## ---- echo=TRUE, fig.cap="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Bar graph with germination percentage in a factorial analisys"----
 
-## ----impdt, out.width='100%', fig.cap= "Fieldbook interface for import your data", fig.align='center'----
-knitr::include_graphics('files/impdt.png')
+## Germination Percentage (GRP)
 
-## ----dwl, fig.cap='Dowload option for the calculated variables', fig.align='center',out.width='100%'----
-knitr::include_graphics('files/dtdown.png')
+# analysis of variance
 
-## ----stat,  fig.cap="Statitical analysis with ANOVA and mean comparison test", fig.align='center', out.width='100%'----
-knitr::include_graphics('files/stat.png')
+av <- aov(formula = grp ~ nacl*temp + rep, data = gsm)
 
-## ----plot,  fig.cap="Customized interface for bar or line plot", fig.align='center', out.width='100%'----
-knitr::include_graphics('files/plot.png')
+# mean comparison test
 
-## ----gtime,  fig.cap='Germination in time plot', fig.align='center', out.width='100%'----
-knitr::include_graphics('files/gtime.png')
+mc_grp <- ger_testcomp(aov = av
+                       , comp = c("temp", "nacl")
+                       , type = "snk"
+                       )
+
+# data result
+
+mc_grp$table %>% 
+   kable(caption = "Germination percentage mean comparision")
+
+# bar graphics for germination percentage
+
+grp <- mc_grp$table %>% 
+   fplot(data = .
+       , type = "bar"
+       , x = "temp"
+       , y = "grp"
+       , group = "nacl"
+       , ylimits = c(0,120, 30)
+       , ylab = "Germination ('%')"
+       , xlab = "Temperature (ºC)"
+       , glab = "NaCl (MPa)"
+       , error = "ste"
+       , sig = "sig"
+       , color = F
+       )
+
+grp
+
+
+## ---- echo=TRUE, fig.cap="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Bar graph for mean germination time in a factorial analisys."----
+
+## Mean Germination Time (MGT)
+
+# analysis of variance
+
+av <- aov(formula = mgt ~ nacl*temp + rep, data = gsm)
+
+# mean comparison test
+
+mc_mgt <- ger_testcomp(aov = av
+                       , comp = c("temp", "nacl")
+                       , type = "snk")
+
+# data result
+
+mc_mgt$table %>% 
+   kable(caption = "Mean germination time comparison")
+
+# bar graphics for mean germination time
+
+mgt <- mc_mgt$table %>% 
+   fplot(data = .
+       , type = "bar" 
+       , x = "temp"
+       , y = "mgt"
+       , group = "nacl"
+       , ylimits = c(0,9, 1)
+       , ylab = "Mean germination time (days)"
+       , xlab = "Temperature (ºC)"
+       , glab = "NaCl (MPa)"
+       , sig = "sig"
+       , error = "ste"
+       , color = T
+       )
+
+mgt
+
+## ---- echo=TRUE, fig.cap="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Line graph from cumulative germination under different osmotic potentials."----
+
+# data frame with percentage or relative germination in time by NaCl
+
+git <- ger_intime(Factor = "nacl"
+                  , SeedN = "seeds"
+                  , evalName = "D"
+                  , method = "percentage"
+                  , data = fb
+                  )
+
+# data result
+
+git %>% 
+   head(10) %>% 
+   kable(caption = "Cumulative germination by nacl factor")
+
+# graphic germination in time by NaCl
+
+nacl <- git %>% 
+   fplot(data = .
+        , type = "line"
+        , x = "evaluation"
+        , y = "mean"
+        , group = "nacl"
+        , ylimits = c(0, 110, 10)
+        , ylab = "Germination ('%')"
+        , xlab = "Day"
+        , glab = "NaCl (MPa)"
+        , color = T
+        , error = "ste"
+        )
+nacl
+
+
+## ---- echo=TRUE, fig.cap="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Line graph from cumulative germination under different temperatures."----
+
+# data frame with percentage or relative germination in time by temperature
+
+git <- ger_intime(Factor = "temp"
+                  , SeedN = "seeds"
+                  , evalName = "D"
+                  , method = "percentage"
+                  , data = fb) 
+
+# data result
+
+git %>% 
+   head(10) %>% 
+   kable(caption = "Cumulative germination by temperature factor")
+
+# graphic germination in time by temperature
+
+temp <- git %>% 
+   fplot(data = .
+        , type = "line"
+        , x = "evaluation"
+        , y = "mean"
+        , group = "temp"
+        , ylimits = c(0, 110, 10)
+        , ylab = "Germination ('%')"
+        , xlab = "Day"
+        , glab = "Temperature ('°C')"
+        , color = F
+        ) 
+temp
+
+
+## ---- echo=TRUE---------------------------------------------------------------
+
+library(ggplot2)
+
+git <- ger_intime(Factor = "temp"
+                  , SeedN = "seeds"
+                  , evalName = "D"
+                  , method = "percentage"
+                  , data = fb
+                  ) 
+
+ggplot <- git %>% 
+   fplot(data = .
+        , type = "line"
+        , x = "evaluation"
+        , y = "mean"
+        , group = "temp"
+        , ylimits = c(0, 110, 10)
+        , ylab = "Germination ('%')"
+        , xlab = "Day"
+        , glab = "Temperature ('°C')"
+        , color = T
+        ) +
+  scale_x_continuous(n.breaks = 10, limits = c(0, 11)) 
+
+ggplot
 
 ## ----references---------------------------------------------------------------
 if(!file.exists("files/pkgs.bib")){write_bib(c(.packages()),'files/pkgs.bib')}

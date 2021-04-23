@@ -10,6 +10,9 @@ status](https://ci.appveyor.com/api/projects/status/v3o938fhw0unvbs7?svg=true)](
 [![Build
 Status](https://travis-ci.org/Flavjack/GerminaR.svg?branch=master)](https://travis-ci.org/Flavjack/GerminaR)
 [![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version/GerminaR)](https://cran.r-project.org/package=GerminaR)
+[![CRAN RStudio mirror
+downloads](https://cranlogs.r-pkg.org/badges/grand-total/GerminaR?color=green)](https://r-pkg.org/pkg/GerminaR)
+[![DOI](https://zenodo.org/badge/49505163.svg)](https://zenodo.org/badge/latestdoi/49505163)
 <!-- badges: end -->
 
 GerminaR is a platform base in open source package to calculate and
@@ -37,13 +40,15 @@ remotes::install_github("Flavjack/GerminaR")
 ## GerminaQuant app
 
 ``` r
-library(GerminaR)
-GerminaQuant()
+GerminaR::GerminaQuant()
 ```
 
 If is the first time running the app you should install the app
-dependencies, including the following argument
-`GerminaQuant(dependencies = T)`
+dependencies, including the following argument:
+
+``` r
+GerminaR::GerminaQuant(dependencies = TRUE)
+```
 
 After install the package and the app dependencies also you can access
 to the app through the Addins list in Rstudio or using the following

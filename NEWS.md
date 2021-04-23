@@ -1,4 +1,28 @@
-# GerminaR 2.0.1
+# Version 2.1.1
+
+Changes incompatible with the old versions. Arguments changed in the syntax for `fplot()`.
+
+- *Package*
+  - Include app info when run `GerminaQuant()`
+  - Exclude `gtools` from depends
+  - Include function `webTable()`
+  - Update `ger_boxp()`
+  - New domain: germinar.inkaverse.com
+  - Update `fplot()`
+    - Allow add new layer. e.g. `coord_flip()`
+
+- *GerminaQuant*
+  - Suppress error messages in console when run the app
+  - Change dependency: `ggpubr` --> `cowplot`
+  - Exclude filter in the app
+  - Update tables style
+  - Module name change: Outliers -> Exploratory
+  - Update modules:
+    - Exploratory
+    - Graphics
+    - Intime
+
+# Version 2.0.1
 
 ## Major changes
 
@@ -10,7 +34,7 @@
 - Install dependencies for the app
 - Update functions to tidyverse in app
 
-# GerminaR 2.0.0
+# Version 2.0.0
 
 ## Major changes
 
@@ -30,3 +54,7 @@
 - Fix filters and drop-list in GerminaQuant
 - Fix resolution in the graphics produces in GerminaQuant
 - Auto close local session of app when finish process
+
+# Version 1.0
+
+- Package release

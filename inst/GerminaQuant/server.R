@@ -4,25 +4,16 @@
 #> open https://flavjack.github.io/GerminaR/
 #> open https://flavjack.shinyapps.io/germinaquant/
 #> author .: Flavio Lozano-Isla (lozanoisla.com)
-#> date .: 2020-10-24
+#> date .: 2021-04-20
 # -------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------
 # packages ----------------------------------------------------------------
 # -------------------------------------------------------------------------
 
-if (file.exists("setup.R")) { source("setup.R") }
+#> devtools::install_github("flavjack/GerminaR")
 
-library(GerminaR)
-library(shiny)
-library(metathis)
-library(tidyverse)
-library(shinydashboard)
-library(shinyWidgets)
-library(gsheet)
-library(readxl)
-library(ggpubr)
-library(DT)
+source("pkgs.R")
 
 # app ---------------------------------------------------------------------
 # -------------------------------------------------------------------------
@@ -41,37 +32,20 @@ observe({
   
 })
   
-# import data -----------------------------------------------------------
-  
-  observe({
-    
-    cat("Import data --------------------------------------------------\n")
-    
-    cat("input$import_excel$name")
-    print(input$import_excel$name)
-    
-    cat("input$import_excel$datapath")
-    print(input$import_excel$datapath)
-    
-    cat("input$import_gsheet")
-    print(input$import_gsheet)
-    
-  })
-
-
 # -------------------------------------------------------------------------
   
   data_fb <-  eventReactive(input$reload, {
     
     if ( !is.null(input$import_excel) ) {
       
-     dt <-  readxl::read_excel(path = input$import_excel$datapath
-                 , sheet = input$sheetdt
-                 ) %>% as.data.frame()
-     
+      dt <-  readxl::read_excel(path = input$import_excel$datapath
+                                , sheet = input$sheetdt) %>% 
+        as.data.frame()
+      
     } else if ( input$import_gsheet != "" ){
       
-     dt <- gsheet::gsheet2tbl(url = input$import_gsheet) %>% as.data.frame()
+      dt <- gsheet::gsheet2tbl(url = input$import_gsheet) %>% 
+        as.data.frame()
       
     } else { return(NULL) }
     
@@ -82,37 +56,14 @@ observe({
 # -------------------------------------------------------------------------
   
 output$fb_excel <- DT::renderDataTable(server = FALSE, {
-    
-    DT::datatable(data = data_fb(),
-                filter = 'top',
-                extensions = c('Buttons', 'Scroller'),
-                rownames = FALSE,
-                
-                options = list(
-                  
-                  searchHighlight = TRUE,
-                  searching = TRUE,
-                  
-                  dom = 'Bfrtip',
-                  buttons = list(
-                    'copy',
-                    list(extend = 'csv', filename = input$stat_rsp),
-                    list(extend = 'excel', filename = input$stat_rsp)
-                  ),
-                  
-                  autoWidth = TRUE,
-                  columnDefs = list(list(className = 'dt-center', targets ="_all")),
-                  deferRender=TRUE,
-                  scrollY = 400,
-                  scrollX = TRUE,
-                  scroller = TRUE,
-                  
-                  initComplete = DT::JS(
-                    "function(settings, json) {",
-                    "$(this.api().table().header()).css({'background-color': '#000', 'color': '#fff'});",
-                    "}")
-                ))
-  })
+  
+  validate( need( is.data.frame(data_fb())
+                  , "Insert a Google spreadsheet URL or xlsx file") )
+  
+  webTable(data = data_fb()
+           , file_name = "FieldBook")
+  
+})
 
 # -------------------------------------------------------------------------
 
@@ -141,181 +92,23 @@ output$data_viewer <- renderUI({
   
 })
 
-# filter ------------------------------------------------------------------
-
-output$filter_01 <- renderUI({
-  
-  validate( need( data_fb(), "Insert a Google spreadsheet URL or xlsx file") )
-
-  file <- data_fb()
-  fbn <- data_fb() %>% select(!starts_with(input$evalName)) %>% names()
-
-  selectInput(
-    inputId = "filter_nm01",
-    label = "Filter 1 (optional)",
-    choices = c("choose" = "", fbn)
-  )
-
-})
-
-output$filter_fact01 <- renderUI({
-
-  validate( need( input$filter_nm01, "Select your levels") )
-
-  file <- data_fb()
-  fl <- file[, input$filter_nm01]
-
-  selectInput(
-    inputId = "filter_ft01",
-    label = "Levels",
-    choices = c("choose" = "", fl),
-    multiple = TRUE
-  )
-
-})
-
-output$filter_02 <- renderUI({
-  
-  validate( need( data_fb(), "Insert a Google spreadsheet URL or xlsx file") )
-
-  file <- data_fb()
-  fbn <- data_fb() %>% select(!starts_with(input$evalName)) %>% names()
-
-  selectInput(
-    inputId = "filter_nm02",
-    label = "Filter 2 (optional)",
-    choices = c("choose" = "", fbn)
-  )
-
-})
-
-output$filter_fact02 <- renderUI({
-
-  validate(need( input$filter_nm02, "Select your levels"))
-
-  file <- data_fb()
-  fl <- file[, input$filter_nm02]
-
-  selectInput(
-    inputId = "filter_ft02",
-    label = "Levels",
-    choices = c("choose" = "", fl),
-    multiple = TRUE
-  )
-
-})
-
-# data filtered -----------------------------------------------------------
-
-fb <- reactive({
-  
-  validate( need( data_fb(), "Insert a Google spreadsheet URL or xlsx file") )
-
-  file <- data_fb()
-
-  fc1 <- input$filter_nm01
-  lv1 <- input$filter_ft01
-
-  fc2 <- input$filter_nm02
-  lv2 <- input$filter_ft02
-
-  if( fc1 == "" && fc2 == "" ){
-
-  dt <- file
-
-  } else if (fc1 != "" && fc2 != ""){
-
-    dt <- file %>%
-      subset( eval(parse(text = fc1)) %in% lv1 & eval(parse(text = fc2)) %in% lv2 )
-
-        if ( length(lv1) == 1){
-
-          dt[, fc1] <- NULL
-        }
-
-        if ( length(lv2) == 1){
-
-          dt[, fc2] <- NULL
-        }
-
-  } else if (fc1 != "" && fc2 == "" ){
-
-    dt <- file %>%
-      subset( eval(parse(text = fc1)) %in% lv1 )
-
-          if ( length(lv1) == 1){
-
-            dt[, fc1] <- NULL
-          }
-
-  } else if (fc1 == "" && fc2 != "" ){
-
-    dt <- file %>%
-      subset( eval(parse(text = fc2)) %in% lv2 )
-
-
-          if ( length(lv2) == 1){
-
-            dt[, fc2] <- NULL
-          }
-
-  }
-
-  dt
-
-})
-
 # index calculation --------------------------------------------------------
 
 varCal <- reactive({
   
-  validate( need( fb(), "Insert a Google spreadsheet URL or xlsx file") )
+  validate( need( data_fb(), "Insert a Google spreadsheet URL or xlsx file") )
   
-  inFile <- fb()
-  if (is.null(inFile )) return(NULL)
-  ger_summary(SeedN = input$SeedN
+  data_fb() %>% 
+    ger_summary(SeedN = input$SeedN
               , evalName = input$evalName
-              , data = inFile
-              )
+              , data = . )
+  
+})
 
-  })
-
-output$summary = DT::renderDataTable({
+output$summary <- DT::renderDataTable(server = FALSE, {
   
-  file <- varCal()
-  
-  file <- file %>% format(digits = 3, nsmall = 3)
-  
-  DT::datatable(file,
-                
-                filter = 'top',
-                extensions = c('Buttons', 'Scroller'),
-                rownames = FALSE,
-                
-                options = list(
-                  
-                  searchHighlight = TRUE,
-                  searching = TRUE,
-                  
-                  dom = 'Bfrtip',
-                  buttons = list(
-                    'copy',
-                    list(extend = 'csv', filename = input$stat_rsp),
-                    list(extend = 'excel', filename = input$stat_rsp)
-                  ),
-                  
-                  autoWidth = TRUE,
-                  columnDefs = list(list(className = 'dt-center', targets ="_all")),
-                  deferRender=TRUE,
-                  scrollY = 400,
-                  scrollX = TRUE,
-                  scroller = TRUE,
-                  
-                  initComplete = DT::JS(
-                    "function(settings, json) {",
-                    "$(this.api().table().header()).css({'background-color': '#000', 'color': '#fff'});",
-                    "}")
-                ))
+  webTable(data = varCal()
+           , file_name = "GerminaQuant-indices")
   
 })
 
@@ -323,7 +116,16 @@ output$summary = DT::renderDataTable({
 
 var_names <- reactive({
   
- vars <- c("grs", "grp", "mgt", "mgr", "gsp", "unc", "syn", "vgt", "sdg", "cvg")
+ vars <- c("grs"
+           , "grp"
+           , "mgt"
+           , "mgr"
+           , "gsp"
+           , "unc"
+           , "syn"
+           , "vgt"
+           , "sdg"
+           , "cvg")
   
 })
 
@@ -363,53 +165,59 @@ output$bpz <- renderUI({
   
 })
 
-output$boxplot <- renderPlot({
+# boxplot -----------------------------------------------------------------
+
+boxplot <- reactive({
   
   validate(
-    
-    need( input$ybp, "Select your response variable"),
-    need( input$xbp, "Select your X axis variable" ),
-    need( input$zbp, "Select your grouped variable")
-    
-  )
+    need( input$ybp, "Select your response variable")
+    , need( input$xbp, "Select your X axis variable" )
+    )
+  
+  ylimits <- input$bpbrk %>% 
+    strsplit(split = "[*]") %>% 
+    unlist() %>% 
+    as.numeric()
+  
+  xrot <- input$bprot %>% 
+    strsplit(split = "[*]") %>% 
+    unlist() %>% 
+    as.numeric()
 
-  file <- varCal()
-
-  variable <- input$ybp
-  fx <-  input$xbp
-  fz <-  input$zbp
-  gply <- input$bply
-  gplx <- input$bplx
-  gplz <- input$bplz
-  brk <- input$bpbrk
-  
-  # Title axis --------------------------------------------------------------
-  
-  if ( gply == ""){ gply <- NULL }
-  
-  if ( gplx == ""){ gplx <- NULL }
-  
-  if ( gplz == ""){ gplz <- NULL }
-  
-  if(is.na(brk)){
-    
-    brks <- NULL
-    
-  } else { brks <- brk}
-  
-  boxp <- ger_boxp(data = file
-                   , y = variable
-                   , x = fx
-                   , z = fz
-                   , xlab = gplx
-                   , ylab = gply
-                   , lgl =  gplz
-                   , lgd = "top"
-                   , font = input$bpsize
-                   , brk = brks)
-  boxp
+  varCal() %>% 
+    ger_boxp(y = input$ybp
+             , x = input$xbp
+             , group = if(input$zbp == "") NULL else input$zbp
+             , xlab = if(input$bplx == "") NULL else input$bplx
+             , ylab = if(input$bply == "") NULL else input$bply
+             , glab = if(input$bplz == "") NULL else input$bplz
+             , ylimits =  if(input$bpbrk == "") NULL else ylimits
+             , xrotation = if(input$bprot == "") NULL else xrot
+             , opt = if(input$bpopt == "") NULL else input$bpopt
+             , legend = input$bplg
+             )
 
 })
+
+output$boxplot <- renderImage({
+  
+  validate(need(boxplot(), "Choose your variables"))
+  
+  
+  dpi <- input$bprs
+  ancho <- input$bpwd
+  alto <- input$bphg
+  
+  outfile <- tempfile(fileext = ".png")
+  
+  png(outfile, width = ancho, height = alto, units = "cm", res = dpi)
+  print(boxplot())
+  dev.off()
+  
+  list(src = outfile)
+  
+}, deleteFile = TRUE)
+
 
 # statistics --------------------------------------------------------------
 
@@ -417,7 +225,9 @@ output$boxplot <- renderPlot({
 
 output$stat_response <- renderUI({
 
-  fbn <- varCal() %>% select(var_names()) %>% names() 
+  fbn <- varCal() %>% 
+    select(var_names()) %>% 
+    names() 
 
   selectInput(
     inputId = "stat_rsp",
@@ -430,7 +240,9 @@ output$stat_response <- renderUI({
 
 output$stat_factor <- renderUI({
 
-  fbn <- varCal() %>% select(!var_names()) %>% names() 
+  fbn <- varCal() %>% 
+    select(!var_names()) %>%
+    names() 
 
   selectInput(
     inputId = "stat_fact",
@@ -441,11 +253,11 @@ output$stat_factor <- renderUI({
 
 })
 
-
-
 output$stat_block <- renderUI({
 
-  fbn <- varCal() %>% select(!var_names()) %>% names() 
+  fbn <- varCal() %>% 
+    select(!var_names()) %>%
+    names() 
   
   selectInput(
     inputId = "stat_blk",
@@ -471,9 +283,13 @@ av <- reactive({
 
     variable <- input$stat_rsp
 
-    factor <- input$stat_fact %>% paste0() %>%  paste(collapse= " * ")
+    factor <- input$stat_fact %>% 
+      paste0() %>%  
+      paste(collapse= " * ")
 
-    block <- input$stat_blk %>% paste0() %>% paste(collapse= " + ")
+    block <- input$stat_blk %>% 
+      paste0() %>% 
+      paste(collapse= " + ")
     
     file <- file %>% 
       dplyr::mutate(across(c(input$stat_fact, input$stat_blk), as.factor))
@@ -546,51 +362,21 @@ comp <- reactive({
 
 # Mean comparison table
 
-output$mnc = DT::renderDataTable({
+output$mnc <-  DT::renderDataTable(server = FALSE, {
   
   file <- comp()$table
   
-  file <- file %>% format(digits = 3, nsmall = 3)
-  
-  
-  DT::datatable(file,
-                
-                filter = 'top',
-                extensions = c('Buttons', 'Scroller'),
-                rownames = FALSE,
-                
-                options = list(
-                  
-                  searchHighlight = TRUE,
-                  searching = TRUE,
-                  
-                  dom = 'Bfrtip',
-                  buttons = list(
-                    'copy',
-                    list(extend = 'csv', filename = input$stat_rsp),
-                    list(extend = 'excel', filename = input$stat_rsp)
-                  ),
-                  
-                  autoWidth = TRUE,
-                  columnDefs = list(list(className = 'dt-center', targets ="_all")),
-                  deferRender=TRUE,
-                  scrollY = 400,
-                  scrollX = TRUE,
-                  scroller = TRUE,
-                  
-                  initComplete = DT::JS(
-                    "function(settings, json) {",
-                    "$(this.api().table().header()).css({'background-color': '#000', 'color': '#fff'});",
-                    "}")
-                ))
-  
-})
+  webTable(data = file
+           , file_name = input$stat_rsp)
+  })
 
 # descriptive Statistics
 
-output$stat_summary = renderTable({
+output$stat_summary <-  DT::renderDataTable(server = FALSE, {
   
-  comp()$stats
+  webTable(data = comp()$stats
+           , scrolly = "12vh"
+           , buttons = "copy")
   
 })
 
@@ -598,48 +384,17 @@ output$stat_summary = renderTable({
 
 output$modelplots <- renderPlot({
   
-  p1 <- comp()$diagplot$freq
-  p2 <- comp()$diagplot$qqnorm
-  p3 <- comp()$diagplot$resid
-  p4 <- comp()$diagplot$sresid
-  
-  ggarrange(p1, p2, p3, p4, ncol = 2, nrow = 2)
+  diag <- comp()$diagplot 
+  plot_grid(plotlist = diag, ncol = 2)
   
 })
 
 # graphics ----------------------------------------------------------------
 # -------------------------------------------------------------------------
 
-observe({
-  
-  cat("Graphics --------------------------------------------------\n")
-  
-  cat("input$plot_limit1")
-  print(input$plot_limit1)
-  
-  cat("input$plot_limit2")
-  print(input$plot_limit2)
-  
-  cat("input$plot_ybrakes")
-  print(input$plot_ybrakes)
-  
-  cat("input$stat_fact[1]")
-  print(input$stat_fact[1])
-  
-  cat("input$stat_fact[2]")
-  print(input$stat_fact[2])
-  
-  cat("input$plot_ylab")
-  print(input$plot_ylab)
-  
-  cat("input$plot_xlab")
-  print(input$plot_xlab)
-  
-})
-
 stat_plot <- reactive({
-
-df <- comp()$table
+  
+  validate(need(input$stat_fact, "Choose your factors and response variable"))
 
 if ( length(input$stat_fact) == 1 ) {
   
@@ -653,47 +408,52 @@ if ( length(input$stat_fact) == 1 ) {
   
 }
 
-if ( !is.na(input$plot_limit1) & !is.na(input$plot_limit2) ) {
-  
-  limits <- c(input$plot_limit1, input$plot_limit2)
-  
-} else { limits <- NULL }
+ylimits <- input$plot_ylimits %>% 
+  strsplit(split = "[*]") %>% 
+  unlist() %>% 
+  as.numeric()
 
-if (is.na(input$plot_ybrakes)) { ybrakes <- NULL } else { ybrakes <- input$plot_ybrakes }
+plot_xrotation <- input$plot_xrotation %>% 
+  strsplit(split = "[*]") %>% 
+  unlist() %>% 
+  as.numeric()
 
-if ( input$plot_ylab == "" ) { ylab <- NULL } else { ylab <- input$plot_ylab }
-if ( input$plot_xlab == "" ) { xlab <- NULL } else { xlab <- input$plot_xlab }
-if ( input$plot_glab == "" ) { glab <- NULL } else { glab <- input$plot_glab }
+xtext <- input$plot_xbrakes %>% 
+  strsplit(split = ",") %>% 
+  unlist()
 
-if (input$plot_sig == "no") { sig <- NULL } else { sig <- input$plot_sig }
+gtext <- input$plot_gbrakes %>% 
+  strsplit(split = ",") %>% 
+  unlist() 
 
 # -------------------------------------------------------------------------
 
-   pt <- fplot(data = df
-               , type = input$plot_type
-               , x = xvar
-               , y = input$stat_rsp
-               , groups = gvar
-               , ylab = ylab
-               , xlab = xlab
-               , glab = glab
-               , legend = input$plot_legend
-               , sig = sig
-               , error = input$plot_error
-               , limits = limits
-               , brakes = ybrakes
-               , xbrks = NULL
-               , gbrks = NULL
-               , color = input$plot_color
-               )
-   
-   pt
+fplot(data = comp()$table
+      , type = input$plot_type
+     , x = xvar
+     , y = input$stat_rsp
+     , group = gvar
+     , ylab = if (input$plot_ylab == "") NULL else input$plot_ylab
+     , xlab = if (input$plot_xlab == "") NULL else input$plot_xlab
+     , glab = if (input$plot_glab == "") NULL else input$plot_glab
+     , legend = input$plot_legend
+     , sig = if(input$plot_sig == "no") NULL else input$plot_sig
+     , error = input$plot_error
+     , color = if(input$plot_color == "yes") TRUE else FALSE
+     , ylimits = if(input$plot_ylimits == "") NULL else ylimits
+     , xtext = if(input$plot_xbrakes == "") NULL else xtext
+     , gtext = if(input$plot_gbrakes == "") NULL else gtext
+     , xrotation = if(input$plot_xrotation == "") NULL else plot_xrotation
+     , opt = if(input$plot_opt == "") NULL else input$plot_opt
+     )
 
 })
 
 # plot output -------------------------------------------------------------
 
 output$plotgr <- renderImage({
+  
+  validate(need(stat_plot(), "Choose your model"))
   
   dpi <- input$plot_res
   ancho <- input$plot_width
@@ -715,7 +475,7 @@ output$plotgr <- renderImage({
 
 output$smvar <- renderUI({
   
-  inFile <- fb()
+  inFile <- data_fb()
 
   if (is.null(inFile)) return(NULL)
 
@@ -729,66 +489,74 @@ output$smvar <- renderUI({
 
 gnt <- reactive({
   
-  inFile <- fb()
+  validate(need(input$summary_by, "Choose your factor"))
+  
+  inFile <- data_fb()
   
   if (is.null(inFile)) { return(NULL) }
   
   else if (input$summary_by ==''){ return(NULL) }
   
   else {
-
-    smt <- ger_intime(Factor = input$summary_by
-                      , SeedN = input$SeedN
-                      , evalName = input$evalName
-                      , method = input$intime_type
-                      , data = inFile
-                      )
+    
+    ts <- ger_intime(Factor = input$summary_by
+               , SeedN = input$SeedN
+               , evalName = input$evalName
+               , method = input$intime_type
+               , data = inFile
+               )
   }
 
 })
 
 intime_plot <- reactive({
   
-  validate(need( input$summary_by, "Select your response variable" ) )
+  validate(need( gnt(), "Select your response variable" ) )
   
-  if ( !is.na(input$intime_limit1) & !is.na(input$intime_limit2) ) {
-    
-    limits <- c(input$intime_limit1, input$intime_limit2)
-    
-  } else { limits <- NULL }
-  
-  if (is.na(input$intime_ybrakes)) { ybrakes <- NULL } else { ybrakes <- input$intime_ybrakes }
-  
-  if ( input$intime_ylab == "" ) { ylab <- NULL } else { ylab <- input$intime_ylab }
-  if ( input$intime_xlab == "" ) { xlab <- NULL } else { xlab <- input$intime_xlab }
-  if ( input$intime_glab == "" ) { glab <- NULL } else { glab <- input$intime_glab }
-  
+  ylimits <- input$intime_ylimits %>%
+    strsplit(split = "[*]") %>%
+    unlist() %>%
+    as.numeric()
+
+  plot_xrotation <- input$intime_xrotation %>%
+    strsplit(split = "[*]") %>%
+    unlist() %>%
+    as.numeric()
+
+  xtext <- input$intime_xbrakes %>%
+    strsplit(split = ",") %>%
+    unlist()
+
+  gtext <- input$intime_gbrakes %>%
+    strsplit(split = ",") %>%
+    unlist()
+
   # -------------------------------------------------------------------------
   
-  pt <- fplot(data =  gnt()
-              , type = "line"
-              , x = "evaluation"
-              , y = "mean"
-              , groups = input$summary_by
-              , ylab = ylab
-              , xlab = xlab
-              , glab = glab
-              , legend = input$intime_legend
-              , sig = NULL
-              , error = input$intime_error
-              , limits = limits
-              , brakes = ybrakes
-              , xbrks = NULL
-              , gbrks = NULL
-              , color = input$intime_color
-  )
-  
-  pt
+  fplot(data = gnt()
+        , type = "line"
+        , x = "evaluation" 
+        , y = "mean"
+        , group = input$summary_by
+        , ylab = if (input$intime_ylab == "") NULL else input$intime_ylab
+        , xlab = if (input$intime_xlab == "") NULL else input$intime_xlab
+        , glab = if (input$intime_glab == "") NULL else input$intime_glab
+        , legend = input$intime_legend
+        , color = if(input$intime_color == "yes") TRUE else FALSE
+        , ylimits = if(input$intime_ylimits == "") NULL else ylimits
+        , xrotation = if(input$intime_xrotation == "") NULL else plot_xrotation
+        , xtext = if(input$intime_xbrakes == "") NULL else xtext
+        , gtext = if(input$intime_gbrakes == "") NULL else gtext
+        , error = input$intime_error
+        , opt = if(input$intime_opt == "") NULL else input$intime_opt
+        )
   
 })
 
 
 output$intime_plot <- renderImage({
+  
+  validate(need(intime_plot(), "Select your factor"))
   
   dpi <- input$intime_res
   ancho <- input$intime_width
@@ -827,8 +595,4 @@ output$ops <- reactive({
 
 
 })
-
-
-# end germinaquant --------------------------------------------------------
-# -------------------------------------------------------------------------
 
