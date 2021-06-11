@@ -1,3 +1,25 @@
+# Version 2.1.2
+
+- *Package*
+  - `fplot()` 
+    - Absolute values to ybrakes
+    - Include color using vectors
+    - Font size in significance
+    - Delete plot borders
+  - Added function `textcolor()`
+  - Update logos
+  
+- *GerminaQuant*
+  - Styled messages in the console
+  - Include multiple layers in the graphs `opt`
+  - Possibility to exclude the error bar in the plots
+  - Include demo videos for the app
+  - Change name: Model plot --> Model diagnostic
+  - Update vignettes
+    - introduction: add indices info
+    - germinaquant: upate module description
+  - Include information to `prosopis()`
+  
 # Version 2.1.1
 
 Changes incompatible with the old versions. Arguments changed in the syntax for `fplot()`.
@@ -55,6 +77,6 @@ Changes incompatible with the old versions. Arguments changed in the syntax for 
 - Fix resolution in the graphics produces in GerminaQuant
 - Auto close local session of app when finish process
 
-# Version 1.0
+# Version 1.0.0
 
 - Package release

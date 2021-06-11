@@ -4,7 +4,7 @@
 #> open https://flavjack.github.io/GerminaR/
 #> open https://flavjack.shinyapps.io/germinaquant/
 #> author .: Flavio Lozano-Isla (lozanoisla.com)
-#> date .: 2021-04-20
+#> date .: 2021-04-29
 # -------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------
@@ -13,7 +13,8 @@
 
 #> devtools::install_github("flavjack/GerminaR")
 
-source("pkgs.R")
+source("msgs.R")
+suppressPackageStartupMessages({source("pkgs.R")})
 
 # app ---------------------------------------------------------------------
 # -------------------------------------------------------------------------
@@ -33,7 +34,7 @@ shinyUI(dashboardPage(skin = "green",
         menuItem("Exploratory", tabName = "outlier", icon = icon("search")),
         menuItem("Statistics", tabName = "stat", icon = icon("pie-chart")),
         menuItem("Graphics", tabName = "graph", icon = icon("tint")),
-        menuItem("Intime", tabName = "germint", icon = icon("hourglass")),
+        menuItem("InTime", tabName = "germint", icon = icon("hourglass")),
         menuItem("Tools", tabName = "tools", icon = icon("wrench"))
       )
 
@@ -98,7 +99,7 @@ shinyUI(dashboardPage(skin = "green",
                   
                   <div style="display:inline-block; width:48%">
                   <p style="text-align:center">
-                  <a target="_blank" href="https://youtube.com/playlist?list=PLSQMdOu57lj9QUoA6JLuv0nBTYacuyrbg"><img src="https://github.com/Flavjack/inti/raw/master/man/figures/youtube.png" style="height:70px" title="Demo" alt="Demo"></a> 
+                  <a target="_blank" href="https://youtube.com/playlist?list=PLSQMdOu57lj9QUoA6JLuv0nBTYacuyrbg"><img src="https://lozanoisla.com/img/youtube.png" style="height:70px" title="Demo" alt="Demo"></a> 
                   <span style="display:block;"><small>Demo</small></span>
                   </p></div>
               
@@ -167,7 +168,7 @@ shinyUI(dashboardPage(skin = "green",
                   
                       <div style="display:inline-block; width:32%">
                       <p style="text-align:center">
-                      <a target="_blank" href="https://flavjack.shinyapps.io/germinaquant/"><img src="https://flavjack.github.io/GerminaR/reference/figures/germinaquant.png" style="height:70px" title="GerminaQuant" alt="GerminaQuant for R"></a>
+                      <a target="_blank" href="https://flavjack.shinyapps.io/germinaquant/"><img src="https://flavjack.github.io/GerminaR/img/germinaquant.png" style="height:80px" title="GerminaQuant" alt="GerminaQuant for R"></a>
                       <span style="display:block;"><small>GerminaQuant</small></span>
                       </p></div>
                       
@@ -261,16 +262,8 @@ shinyUI(dashboardPage(skin = "green",
 
           textInput("SeedN", label = strong("Seeds (column name)"), value = "seeds"),
           
-          textInput("evalName", label = strong("Evaluations (prefix)"), value = "D"),
+          textInput("evalName", label = strong("Evaluations (prefix)"), value = "D")
           
-          uiOutput("filter_01"),
-          
-          uiOutput("filter_fact01"),
-          
-          uiOutput("filter_02"),
-          
-          uiOutput("filter_fact02")
-
           )
           
         )
@@ -285,7 +278,14 @@ shinyUI(dashboardPage(skin = "green",
           
           box(width = 12,
               
-              DT::dataTableOutput("summary")
+              DT::dataTableOutput("summary"),
+              
+              br(),
+              
+              actionButton(inputId= 'indicesLink', label = "Indices info"
+                           , icon = icon("seedling")
+                           , onclick ="window.open('https://germinar.inkaverse.com/articles/introduction.html', '_blank')"
+                           )
               
           )   
           
@@ -510,7 +510,7 @@ shinyUI(dashboardPage(skin = "green",
                   
                   ),
               
-              box(title = "Model plots", 
+              box(title = "Model diagnostic", 
                   solidHeader = T,
                   width = 12, 
                   collapsible = T,
@@ -716,6 +716,7 @@ shinyUI(dashboardPage(skin = "green",
                     label = "Error",
                     choices = c("ste"
                                 , "std"
+                                , "no"
                                 ),
                     inline = TRUE)
                 )
@@ -918,7 +919,8 @@ tabItem(tabName = "germint",
                                     label = "Error",
                                     choices = c("ste"
                                                 , "std"
-                                    ),
+                                                , "no"
+                                                ),
                                     inline = TRUE)
                            )
                            

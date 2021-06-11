@@ -13,7 +13,27 @@ vignette: >
 ---
 
 ```{r setup, include=FALSE}
-source("http://lozanoisla.com/lectures/setup.r")
+source("http://inkaverse.com/docs.r")
+```
+
+GerminaR is a platform base in open source package to calculate and graphic the germination indices in R. GerminaR include a web application called “GerminQuant for R” for non programming user.
+
+```{=html}
+<div id=footer style="width:100%; margin:auto;">
+
+<div style="display:inline-block; width:49%">
+<p style="text-align:center">
+<a target="_blank" href="https://CRAN.R-project.org/package=GerminaR"><img src="https://flavjack.github.io/GerminaR/reference/figures/logo.png" style="height:70px" title="R cran" alt="GerminaR"></a> 
+<span style="display:block;"><small>GerminaR</small></span>
+</p></div>
+
+<div style="display:inline-block; width:49%">
+<p style="text-align:center">
+<a target="_blank" href="https://germinar.inkaverse.com/"><img src="https://pkgdown.r-lib.org/reference/figures/logo.png" style="height:70px" title="GerminaR" alt="GerminaR"></a> 
+<span style="display:block;"><small>Project</small></span>
+</p></div>
+
+</div>
 ```
 
 Analysis for the germination experiment can follow a routine. The functions will de explain according to the data set included in the GerminaR package: "*prosopis*". 
@@ -24,11 +44,12 @@ Analysis for the germination experiment can follow a routine. The functions will
 # Install packages and dependencies
 
 library(GerminaR)
+library(dplyr)
 
 # load data
 
 fb <- prosopis %>% 
-   dplyr::mutate(across(c(nacl, temp, rep), as.factor))
+   mutate(across(c(nacl, temp, rep), as.factor))
 
 # Prosopis data set
 
@@ -53,7 +74,7 @@ gsm <- ger_summary(SeedN = "seeds"
 gsm %>% 
   head(10) %>% 
   mutate(across(where(is.numeric), ~round(., 2))) %>% 
-   kable(caption = "Function ger_summary performe ten germination indices")
+  kable(caption = "Function ger_summary performe ten germination indices")
 
 ```
 
@@ -131,7 +152,7 @@ mgt <- mc_mgt$table %>%
        , x = "temp"
        , y = "mgt"
        , group = "nacl"
-       , ylimits = c(0,9, 1)
+       , ylimits = c(0,10, 1)
        , ylab = "Mean germination time (days)"
        , xlab = "Temperature (ºC)"
        , glab = "NaCl (MPa)"
@@ -220,7 +241,6 @@ temp <- git %>%
         , color = F
         ) 
 temp
-
 ```
 
 # Using ggplot2

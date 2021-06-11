@@ -1,15 +1,16 @@
 ## ----setup, include=FALSE-----------------------------------------------------
-source("http://lozanoisla.com/lectures/setup.r")
+source("http://inkaverse.com/docs.r")
 
 ## ---- echo=TRUE---------------------------------------------------------------
 # Install packages and dependencies
 
 library(GerminaR)
+library(dplyr)
 
 # load data
 
 fb <- prosopis %>% 
-   dplyr::mutate(across(c(nacl, temp, rep), as.factor))
+   mutate(across(c(nacl, temp, rep), as.factor))
 
 # Prosopis data set
 
@@ -31,7 +32,7 @@ gsm <- ger_summary(SeedN = "seeds"
 gsm %>% 
   head(10) %>% 
   mutate(across(where(is.numeric), ~round(., 2))) %>% 
-   kable(caption = "Function ger_summary performe ten germination indices")
+  kable(caption = "Function ger_summary performe ten germination indices")
 
 
 ## ---- echo=TRUE, fig.cap="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Bar graph with germination percentage in a factorial analisys"----
@@ -101,7 +102,7 @@ mgt <- mc_mgt$table %>%
        , x = "temp"
        , y = "mgt"
        , group = "nacl"
-       , ylimits = c(0,9, 1)
+       , ylimits = c(0,10, 1)
        , ylab = "Mean germination time (days)"
        , xlab = "Temperature (ºC)"
        , glab = "NaCl (MPa)"
@@ -178,7 +179,6 @@ temp <- git %>%
         , color = F
         ) 
 temp
-
 
 ## ---- echo=TRUE---------------------------------------------------------------
 

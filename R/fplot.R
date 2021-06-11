@@ -15,8 +15,9 @@
 #' @param gtext Text labels in groups
 #' @param legend the position of legends ("none", "left", "right", "bottom", "top", or two-element numeric vector)
 #' @param sig Column with the significance
+#' @param sigsize Font size in significance letters
 #' @param error Show the error bar ("ste" or "std").
-#' @param color colored figure (TRUE), otherwise black & white (FALSE)
+#' @param color colored figure c(TRUE, FALSE) or vector with the color. 
 #' @param opt Add news layer to the plot
 #' @return Line o bar plot
 #' @import dplyr
@@ -46,29 +47,16 @@
 #' plotdt <- mc$table
 #'                     
 #'  fplot(data = plotdt
-#'        , type = "line"
+#'        , type = "bar"
 #'        , x = "temp"
 #'        , y = "grp"
 #'        , group = "nacl"
 #'        , sig = "sig"
 #'        , error = "ste"
-#'        , color = F
+#'        , color = T
 #'        , ylimits = c(0, 120, 20)
-#'        , xtext = c(1:5)
-#'        , gtext = c(1:5)
 #'        )
 #'        
-#'  fplot(data = plotdt
-#'        , type = "li"
-#'        , x = "temp"
-#'        , y = "grp"
-#'        , group = "nacl"
-#'        , sig = "sig"
-#'        , error = "ste"
-#'        , color = F
-#'        , ylimits = c(0, 120, 20)
-#'        )
-#'                    
 #' } 
 #' 
 
@@ -86,46 +74,11 @@ fplot <- function(data
                   , gtext = NULL
                   , legend = "top"
                   , sig = NULL
+                  , sigsize = 3
                   , error = NULL
                   , color = TRUE
                   , opt = NULL
                   ){
-  
-# test --------------------------------------------------------------------
-
-  if(FALSE) {
-    
-    library(GerminaR)
-    
-    fb <- prosopis %>% 
-      ger_summary(SeedN = "seeds"
-                  , evalName = "D") 
-    
-    av <- aov(grp ~ nacl*temp, fb)
-    anova(av)
-
-    mc <- ger_testcomp(aov = av
-                       , comp = c("nacl", "temp"))
-    
-    data <- mc$table
-    
-    x <- "temp" 
-    group <- "nacl"
-    y <- "grp"
-    xlab <- NULL # "label x"
-    ylab <- NULL # "label y"
-    glab <- NULL # "legend"
-    ylimits <- NULL # c(0, 120, 10)
-    xrotation <- NULL #c(0, 0.5, 0.5)
-    legend <- "top"
-    gtext <- c(1:5)
-    xtext <- c(1:5)
-    sig <- "sig"
-    error <-  NULL # "ste"
-    color <- FALSE
-    opt  <-  NULL
-    type <- "bar"
-  }
   
 # arguments ---------------------------------------------------------------
   
@@ -140,17 +93,27 @@ fplot <- function(data
 
 # graph-color -------------------------------------------------------------
 
-    color_gray <- gray.colors(n =  data[[group]] %>% unique() %>% length()
-                              , start = 0.8
-                              , end = 0.3) 
+  if (isTRUE(color)) {
     
-    color_full <- colorRampPalette(
+    color <- colorRampPalette(
       c("#86CD80"   # green
         , "#F4CB8C" # orange
-        , "#0198CD" # blue
         , "#F3BB00" # yellow
+        , "#0198CD" # blue
         , "#FE6673" # red
       ))(length(data[[group]] %>% unique()))
+    
+  } else if (isFALSE(color)) {
+    
+    color <- gray.colors(n =  data[[group]] %>% unique() %>% length()
+                         , start = 0.8
+                         , end = 0.3) 
+    
+  } else {
+    
+    color <- color
+    
+  }
 
 # sci-labels --------------------------------------------------------------
 
@@ -195,8 +158,8 @@ fplot <- function(data
       
       geom_col(
         position = position_dodge2()
-        , colour="black"
-        , size=.4
+        , colour = "black"
+        , size = 0.4
         , na.rm = T
       ) +
       labs(
@@ -226,15 +189,15 @@ fplot <- function(data
           , colour = "black"
           , vjust = -0.5
           , hjust = 0.5
-          , angle = 0) 
+          , angle = 0
+          , size = sigsize
+          ) 
       } +
-      scale_fill_manual(values = if(isFALSE(color)) color_gray else color_full
+      scale_fill_manual(values = color
                         , labels = if(!is.null(gtext)) gtext else waiver()) 
     }
-  
 
 # line plot ---------------------------------------------------------------
-
 
   if (type == "linea") {
     
@@ -248,12 +211,16 @@ fplot <- function(data
       geom_point( aes(group =  .data[[group]]
                       , shape = .data[[group]]
                       , color = .data[[group]]
-      ), size = 2.5 ) +
+                      )
+                  , size = 2.5 
+      ) +
       
       geom_line( aes( group =  .data[[group]]
                       , color = .data[[group]]
                       , linetype = .data[[group]]
-      ) ,  size = 1 ) +
+                      ) 
+                 ,  size = 1 
+      ) +
       labs(x = if(is.null(xlab)) x else xlab
            , y = if(is.null(ylab)) y else ylab
            , shape = if(is.null(glab)) group else glab
@@ -282,7 +249,7 @@ fplot <- function(data
       
       scale_color_manual(
         labels = if(!is.null(gtext)) gtext else waiver()
-        , values = if(isFALSE(color)) color_gray else color_full
+        , values = color
             ) + 
       scale_linetype_discrete(labels = if(!is.null(gtext)) gtext else waiver()) +
       scale_shape_discrete(labels = if(!is.null(gtext)) gtext else waiver())
@@ -291,30 +258,34 @@ fplot <- function(data
   
 # layers ------------------------------------------------------------------
 
-  plot + 
-    { if(!is.null(xtext)) scale_x_discrete(labels = xtext) } +
+    
+graph <- plot + 
+      { if(!is.null(xtext)) scale_x_discrete(labels = xtext) } +
+      {
+        if(!is.null(ylimits))
+          scale_y_continuous(
+            limits = ylimits[1:2] 
+            , breaks = seq(ylimits[1], ylimits[2], by = abs(ylimits[3]))
+            , expand = c(0,0)
+          )
+      } 
+    
+layers <- 'graph + 
     theme_minimal() +
-    theme(
-      panel.background = element_rect(fill = "transparent")
-      , plot.background = element_rect(fill = "transparent")
-      , panel.grid.major = element_blank()
-      , panel.grid.minor = element_blank()
-      , legend.background = element_rect(fill = "transparent")
-      , legend.box.background = element_rect(fill = "transparent")
-      , legend.position = legend
-      , axis.text.x = element_text(angle = xrotation[1]
-                                   , hjust= xrotation[2]
-                                   , vjust = xrotation[3])
-    ) + 
-    {
-      if(!is.null(ylimits))
-        scale_y_continuous(
-          limits = ylimits[1:2] 
-          , breaks = seq(ylimits[1], ylimits[2], by = ylimits[3])
-          , expand = c(0,0)
-        )
-    } + 
-    { if(!is.null(opt)) eval(parse(text= opt)) } 
-  
+    theme(legend.position = legend
+    , panel.border = element_rect(colour = "black", fill=NA)
+    , panel.background = element_rect(fill = "transparent")
+    , legend.background = element_rect(fill = "transparent")
+    , axis.text.x = element_text(angle = xrotation[1]
+                                 , hjust= xrotation[2]
+                                 , vjust = xrotation[3])
+    )'
+
+if(is.null(opt)) {
+  eval(parse(text = layers)) 
+} else {
+  eval(parse(text = paste(layers, opt, sep = " + ")))
+}
+
 }
 
