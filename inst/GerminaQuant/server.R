@@ -4,7 +4,7 @@
 #> open https://flavjack.github.io/GerminaR/
 #> open https://flavjack.shinyapps.io/germinaquant/
 #> author .: Flavio Lozano-Isla (lozanoisla.com)
-#> date .: 2021-04-29
+#> date .: 2021-10-10
 # -------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------
@@ -262,112 +262,86 @@ output$stat_block <- renderUI({
   
   selectInput(
     inputId = "stat_blk",
-    label = "Block",
+    label = "Block (RCBD)",
     choices = c("choose" = "", fbn),
+    multiple = FALSE
+  )
+
+})
+
+output$stat_comparison <- renderUI({
+  
+  factors <- if(input$stat_model == "auto") { 
+    
+    input$stat_fact
+    
+  } else if (input$stat_model == "manual") {
+    
+    input$stat_model_factors %>% 
+      strsplit(.,'[[:punct:]]+') %>% 
+      pluck(1) %>% 
+      base::trimws()
+    
+  }
+  
+  selectInput(
+    inputId = "stat_comparison",
+    label = "Comparison",
+    choices = c("choose" = "", factors),
     multiple = TRUE
   )
-
+  
 })
 
-# ANOVA
 
-av <- reactive({
+# germination indices -----------------------------------------------------
 
-  validate(
-
-    need( input$stat_rsp, "Select your response variable" ),
-    need( input$stat_fact, "Select your factors")
-
-  )
-
-    file <- varCal()
-
-    variable <- input$stat_rsp
-
-    factor <- input$stat_fact %>% 
-      paste0() %>%  
-      paste(collapse= " * ")
-
-    block <- input$stat_blk %>% 
-      paste0() %>% 
-      paste(collapse= " + ")
+analysis <- reactive({
+  
+  validate(need(input$stat_rsp, "Choose your response variable"))
+  validate(need(input$stat_comparison, "Choose your factors to compare"))
+  
+  factors <- if(input$stat_model == "auto") { 
     
-    file <- file %>% 
-      dplyr::mutate(across(c(input$stat_fact, input$stat_blk), as.factor))
+    input$stat_fact
     
-    if ( block == "" ){
-
-      formula <- as.formula(paste( variable , factor, sep = " ~ "))
-
-
-    } else {
-
-      formula <- as.formula(paste( variable , paste(block, factor, sep = " + "), sep = " ~ "))
-
+    } else if (input$stat_model == "manual") {
+      
+    input$stat_model_factors
+    
     }
-
-    av <- aov(formula, data = file)
-
-})
-
-# summary stats -----------------------------------------------------------
-
-# ANOVA table
-
-output$tbav = renderPrint({
   
-  file <- av()
-  
-  summary(file)
-  
-})
-
-# comparison test
-
-comp <- reactive({
-  
-  file <- av()
-  test <- input$stmc
-  sig <- input$stsig
-  factor <- input$stat_fact
-  variable <- input$stat_rsp
-  
-  
-  if( length(factor) == 1 && !(variable == '') )
+  bloque <- if(input$stat_model == "auto") { 
     
-  {
+    input$stat_blk
     
-    rs <- GerminaR::ger_testcomp(
-      aov = file,
-      comp = factor[1],
-      type = test,
-      sig = sig)
-    
-  }
+  } else if (input$stat_model == "manual") { NA }
   
-  else if( length(factor) >= 2 && !(variable == '') )
-    
-  {
-    
-    rs <- GerminaR::ger_testcomp(
-      aov = file,
-      comp = c( factor[1], factor[2] ),
-      type = test,
-      sig = sig)
-    
-  }
+  validate(need(factors, "Choose your model factors"))
   
-  rs
-  
-})
+  gquant_analysis(data = varCal()
+                  , response = input$stat_rsp
+                  , factors = factors
+                  , block = bloque
+                  , comparison = input$stat_comparison
+                  , type = input$stmc
+                  , sig = input$stsig
+                  )
+  })
 
-# Mean comparison table
+# anova -------------------------------------------------------------------
+
+output$tbav  <- renderPrint({ summary(analysis()$aov ) })
+
+output$model_formula <- renderPrint({ analysis()$param$formula })
+
+output$graph_formula <- renderPrint({ analysis()$param$formula })
+
+# comparison table --------------------------------------------------------
 
 output$mnc <-  DT::renderDataTable(server = FALSE, {
   
-  file <- comp()$table
-  
-  webTable(data = file
+  webTable(data = analysis()$data$table
            , file_name = input$stat_rsp)
   })
 
@@ -375,7 +349,7 @@ output$mnc <-  DT::renderDataTable(server = FALSE, {
 
 output$stat_summary <-  DT::renderDataTable(server = FALSE, {
   
-  webTable(data = comp()$stats
+  webTable(data = analysis()$data$stat
            , scrolly = "12vh"
            , buttons = "copy")
   
@@ -385,7 +359,7 @@ output$stat_summary <-  DT::renderDataTable(server = FALSE, {
 
 output$modelplots <- renderPlot({
   
-  diag <- comp()$diagplot 
+  diag <- analysis()$data$diagplot 
   plot_grid(plotlist = diag, ncol = 2)
   
 })
@@ -395,58 +369,38 @@ output$modelplots <- renderPlot({
 
 stat_plot <- reactive({
   
-  validate(need(input$stat_fact, "Choose your factors and response variable"))
+  validate(need(analysis(), "Choose your model parameters"))
 
-if ( length(input$stat_fact) == 1 ) {
+if ( length(input$stat_comparison) == 1 ) {
   
-  xvar <- input$stat_fact[1]
-  gvar <- input$stat_fact[1]
+  xvar <- input$stat_comparison[1]
+  gvar <- input$stat_comparison[1]
   
-} else if ( length(input$stat_fact) == 2 ) {
+} else if ( length(input$stat_comparison) == 2 ) {
   
-  xvar <- input$stat_fact[1]
-  gvar <- input$stat_fact[2]
+  xvar <- input$stat_comparison[1]
+  gvar <- input$stat_comparison[2]
   
 }
 
-ylimits <- input$plot_ylimits %>% 
-  strsplit(split = "[*]") %>% 
-  unlist() %>% 
-  as.numeric()
-
-plot_xrotation <- input$plot_xrotation %>% 
-  strsplit(split = "[*]") %>% 
-  unlist() %>% 
-  as.numeric()
-
-xtext <- input$plot_xbrakes %>% 
-  strsplit(split = ",") %>% 
-  unlist()
-
-gtext <- input$plot_gbrakes %>% 
-  strsplit(split = ",") %>% 
-  unlist() 
-
-# -------------------------------------------------------------------------
-
-fplot(data = comp()$table
+fplot(data = analysis()$data$table
       , type = input$plot_type
-     , x = xvar
-     , y = input$stat_rsp
-     , group = gvar
-     , ylab = if (input$plot_ylab == "") NULL else input$plot_ylab
-     , xlab = if (input$plot_xlab == "") NULL else input$plot_xlab
-     , glab = if (input$plot_glab == "") NULL else input$plot_glab
-     , legend = input$plot_legend
-     , sig = if(input$plot_sig == "no") NULL else input$plot_sig
-     , error = if(input$plot_error == "no") NULL else input$plot_error
-     , color = if(input$plot_color == "yes") TRUE else FALSE
-     , ylimits = if(input$plot_ylimits == "") NULL else ylimits
-     , xtext = if(input$plot_xbrakes == "") NULL else xtext
-     , gtext = if(input$plot_gbrakes == "") NULL else gtext
-     , xrotation = if(input$plot_xrotation == "") NULL else plot_xrotation
-     , opt = if(input$plot_opt == "") NULL else input$plot_opt
-     )
+      , y = input$stat_rsp
+      , x = xvar
+      , group = gvar
+      , ylab = input$plot_ylab
+      , xlab = input$plot_xlab
+      , glab = input$plot_glab
+      , legend = input$plot_legend
+      , sig = input$plot_sig 
+      , error = input$plot_error
+      , color = input$plot_color
+      , ylimits = input$plot_ylimits
+      , xtext = input$plot_xbrakes
+      , gtext = input$plot_gbrakes
+      , xrotation = input$plot_xrotation
+      , opt = input$plot_opt
+      )
 
 })
 
@@ -514,46 +468,25 @@ intime_plot <- reactive({
   
   validate(need( gnt(), "Select your response variable" ) )
   
-  ylimits <- input$intime_ylimits %>%
-    strsplit(split = "[*]") %>%
-    unlist() %>%
-    as.numeric()
-
-  plot_xrotation <- input$intime_xrotation %>%
-    strsplit(split = "[*]") %>%
-    unlist() %>%
-    as.numeric()
-
-  xtext <- input$intime_xbrakes %>%
-    strsplit(split = ",") %>%
-    unlist()
-
-  gtext <- input$intime_gbrakes %>%
-    strsplit(split = ",") %>%
-    unlist()
-
-  # -------------------------------------------------------------------------
-  
   fplot(data = gnt()
         , type = "line"
         , x = "evaluation" 
         , y = "mean"
         , group = input$summary_by
-        , ylab = if (input$intime_ylab == "") NULL else input$intime_ylab
-        , xlab = if (input$intime_xlab == "") NULL else input$intime_xlab
-        , glab = if (input$intime_glab == "") NULL else input$intime_glab
+        , ylab = input$intime_ylab
+        , xlab = input$intime_xlab
+        , glab = input$intime_glab
         , legend = input$intime_legend
-        , color = if(input$intime_color == "yes") TRUE else FALSE
-        , ylimits = if(input$intime_ylimits == "") NULL else ylimits
-        , xrotation = if(input$intime_xrotation == "") NULL else plot_xrotation
-        , xtext = if(input$intime_xbrakes == "") NULL else xtext
-        , gtext = if(input$intime_gbrakes == "") NULL else gtext
-        , error = if(input$intime_error == "no") NULL else input$intime_error
-        , opt = if(input$intime_opt == "") NULL else input$intime_opt
+        , color = input$intime_color
+        , ylimits = input$intime_ylimits
+        , xrotation = input$intime_xrotation
+        # , xtext = input$intime_xbrakes
+        , gtext = input$intime_gbrakes
+        , error = input$intime_error
+        , opt =  input$intime_opt
         )
   
 })
-
 
 output$intime_plot <- renderImage({
   

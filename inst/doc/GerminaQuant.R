@@ -1,5 +1,5 @@
 ## ----setup, include=FALSE-----------------------------------------------------
-source("http://inkaverse.com/docs.r")
+source("https://raw.githubusercontent.com/Flavjack/inti/master/pkgdown/favicon/docs.r")
 
 ## ----tabs---------------------------------------------------------------------
 table <- "https://docs.google.com/spreadsheets/d/1QziIXGOwb8cl3GaARJq6Ez6aU7vND_UHKJnFcAKx0VI/edit#gid=573661810"

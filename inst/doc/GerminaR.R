@@ -1,5 +1,5 @@
 ## ----setup, include=FALSE-----------------------------------------------------
-source("http://inkaverse.com/docs.r")
+source("https://raw.githubusercontent.com/Flavjack/inti/master/pkgdown/favicon/docs.r")
 
 ## ---- echo=TRUE---------------------------------------------------------------
 # Install packages and dependencies
@@ -41,7 +41,7 @@ gsm %>%
 
 # analysis of variance
 
-av <- aov(formula = grp ~ nacl*temp + rep, data = gsm)
+av <- aov(grp ~ nacl*temp + rep, data = gsm)
 
 # mean comparison test
 
@@ -63,9 +63,9 @@ grp <- mc_grp$table %>%
        , x = "temp"
        , y = "grp"
        , group = "nacl"
-       , ylimits = c(0,120, 30)
+       , ylimits = c(0, 120, 30)
        , ylab = "Germination ('%')"
-       , xlab = "Temperature (ºC)"
+       , xlab = "Temperature"
        , glab = "NaCl (MPa)"
        , error = "ste"
        , sig = "sig"
@@ -81,7 +81,7 @@ grp
 
 # analysis of variance
 
-av <- aov(formula = mgt ~ nacl*temp + rep, data = gsm)
+av <- aov(mgt ~ nacl*temp + rep, data = gsm)
 
 # mean comparison test
 
@@ -104,7 +104,7 @@ mgt <- mc_mgt$table %>%
        , group = "nacl"
        , ylimits = c(0,10, 1)
        , ylab = "Mean germination time (days)"
-       , xlab = "Temperature (ºC)"
+       , xlab = "Temperature"
        , glab = "NaCl (MPa)"
        , sig = "sig"
        , error = "ste"
@@ -175,7 +175,7 @@ temp <- git %>%
         , ylimits = c(0, 110, 10)
         , ylab = "Germination ('%')"
         , xlab = "Day"
-        , glab = "Temperature ('°C')"
+        , glab = "Temperature"
         , color = F
         ) 
 temp
@@ -200,7 +200,7 @@ ggplot <- git %>%
         , ylimits = c(0, 110, 10)
         , ylab = "Germination ('%')"
         , xlab = "Day"
-        , glab = "Temperature ('°C')"
+        , glab = "Temperature"
         , color = T
         ) +
   scale_x_continuous(n.breaks = 10, limits = c(0, 11)) 

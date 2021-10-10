@@ -11,6 +11,7 @@
 #' @importFrom tibble rownames_to_column
 #' @importFrom purrr pluck
 #' @importFrom stats fitted resid rstandard
+#' @importFrom stats aov as.formula formula
 #' @export
 #' 
 #' @examples  
@@ -19,17 +20,33 @@
 #' 
 #' library(GerminaR)
 #' library(dplyr)
-#' data <- prosopis %>% mutate(across(c(nacl, temp, rep), as.factor))
-#' smr <- ger_summary(SeedN = "seeds", evalName = "D", data = data)
 #' 
-#' aov <- aov(grp ~ nacl*temp, smr)
+#' gdata <- prosopis %>% mutate(across(c(nacl, temp, rep), as.factor))
 #' 
-#' mc <- ger_testcomp(aov = aov
-#'                    , comp <- c("nacl", "temp")
+#' smr <- ger_summary(SeedN = "seeds", evalName = "D", data = gdata)
+#' 
+#' av <- aov(grp ~ rep + nacl*temp, smr)
+#' 
+#' mc <- ger_testcomp(aov = av
+#'                    , comp = c("nacl", "temp")
 #'                    )
+#'                    
 #' } 
 
-ger_testcomp <- function( aov, comp, type = "snk", sig = 0.05){
+ger_testcomp <- function(aov
+                         , comp
+                         , type = "snk"
+                         , sig = 0.05
+                         ){
+  
+  if (FALSE) {
+    
+    aov <- av
+    comp = c("nacl", "temp")
+    type = "snk"
+    sig = 0.05
+    
+  }
   
   if (type == "snk"){
     
@@ -119,12 +136,11 @@ ger_testcomp <- function( aov, comp, type = "snk", sig = 0.05){
   diagplot <- diagplot(model = aov)
 
 # result ------------------------------------------------------------------
-
-mean_comparison <- list(
-    table = tb_mc
-    , stats = smr_stat
-    , diagplot = diagplot
-  )
+  
+  mean_comparison <- list(table = tb_mc
+                          , stats = smr_stat
+                          , diagplot = diagplot
+                          )
     
 }
 

@@ -4,7 +4,7 @@
 #> open https://flavjack.github.io/GerminaR/
 #> open https://flavjack.shinyapps.io/germinaquant/
 #> author .: Flavio Lozano-Isla (lozanoisla.com)
-#> date .: 2021-04-29
+#> date .: 2021-10-10
 # -------------------------------------------------------------------------
 
 # -------------------------------------------------------------------------
@@ -21,8 +21,13 @@ suppressPackageStartupMessages({source("pkgs.R")})
 
 shinyUI(dashboardPage(skin = "green", 
 
-    dashboardHeader(title = "GerminaQuant • app"),
-
+    dashboardHeader(title = "GerminaQuant • app",
+                    
+                    tags$li(class="dropdown", tags$a(href="https://github.com/sponsors/flavjack", icon("heart"), target="_blank")), 
+                    tags$li(class="dropdown", tags$a(href="https://germinar.inkaverse.com/news/" , paste("GerminaR", packageVersion('GerminaR')), target="_blank"))
+                    
+                    ),
+    
 # Sider -------------------------------------------------------------------
 
     dashboardSidebar(
@@ -32,7 +37,7 @@ shinyUI(dashboardPage(skin = "green",
         menuItem("Fieldbook", tabName = "fieldbook", icon = icon("file-alt")),
         menuItem("Germination", tabName = "germination", icon = icon("seedling")),
         menuItem("Exploratory", tabName = "outlier", icon = icon("search")),
-        menuItem("Statistics", tabName = "stat", icon = icon("pie-chart")),
+        menuItem("Statistics", tabName = "stat", icon = icon("chart-pie")),
         menuItem("Graphics", tabName = "graph", icon = icon("tint")),
         menuItem("InTime", tabName = "germint", icon = icon("hourglass")),
         menuItem("Tools", tabName = "tools", icon = icon("wrench"))
@@ -178,7 +183,7 @@ shinyUI(dashboardPage(skin = "green",
 
                   hr(),
                   
-                  HTML('<p>If you have any question, comment or suggestion you can write at <a href="mailto:flavjack@gmail.com">flavjack@gmail.com</a></p>')
+                  HTML('<p>If you have any question, comment or suggestion you can write at <a href="mailto:flavjack@gmail.com">flozano@lamolina.edu.pe</a></p>')
 
                 )
                 
@@ -233,7 +238,7 @@ shinyUI(dashboardPage(skin = "green",
 
             h4( "Update", width = "100%"),
 
-            actionButton(inputId = "reload", label = "", icon("refresh"), width = "100%")
+            actionButton(inputId = "reload", label = "", icon("sync"), width = "100%")
 
           )
 
@@ -443,28 +448,75 @@ shinyUI(dashboardPage(skin = "green",
                 
           shiny::fluidRow(
 
-
           box(width = 5, background = "black",
               
+            column(width = 5,
+              
+              radioButtons(inputId = "stat_model"
+                           , label = "Model parameters"
+                           , choices = c("auto", "manual")
+                           , inline = TRUE
+                           )
+              
+            ),
+            
+            column(width = 7, 
+                   
+                   br(),
+                   
+                   verbatimTextOutput("model_formula")
+                   
+            ),
+            
             column(width = 12,
                    
-                   uiOutput("stat_factor")
+                   uiOutput("stat_response")
                    
+                   ),
+            
+
+            
+            hr(),
+            
+            conditionalPanel(
+              
+              condition = "input.stat_model == 'auto'",
+              
+              column(width = 8,
+                     
+                     uiOutput("stat_factor")
+                     
+                     ),
+              
+              column(width = 4,
+                     
+                     uiOutput("stat_block")
+                     
+                     ),
+              
+              ),
+            
+            conditionalPanel(
+              
+              condition = "input.stat_model == 'manual'",
+              
+              column(width = 12,
+                     
+                     textInput(inputId = "stat_model_factors"
+                               , label = "Experiment model factors"
+                               , placeholder = "e.g. block + factor1*factor2"
+                     )
+              ),
+              
             ),
-
+            
             column(width = 6,
-
-              uiOutput("stat_response")
-
-            ),
-
-            column(width = 6,
-
-              uiOutput("stat_block")
-
-            ),
-
-            column(width = 6,
+                   
+                   uiOutput("stat_comparison")
+                   
+                   ),
+            
+            column(width = 3,
 
               numericInput("stsig",
                 label = "Significance",
@@ -472,10 +524,9 @@ shinyUI(dashboardPage(skin = "green",
                 min = 0,
                 max = 5,
                 step = 0.01)
+              ),
 
-            ),
-
-            column(width = 6,
+            column(width = 3,
 
               selectInput("stmc",
                 label = "Type",
@@ -561,8 +612,16 @@ shinyUI(dashboardPage(skin = "green",
                 ),
                 
                 
-                column(width = 4),
-                
+                column(width = 4, 
+                       
+                       HTML("<b>Model</b>"),
+                       
+                       br(),
+                       br(),
+                       
+                       textOutput("graph_formula")
+                       
+                ),
                 
                 column(width = 4,
 
@@ -693,7 +752,7 @@ shinyUI(dashboardPage(skin = "green",
                     inputId ="plot_color",
                     label = "Color",
                     choices = c("yes"
-                                , "no"
+                                , "no" = "none"
                                 ),
                     inline = TRUE)
                 ),
@@ -704,7 +763,7 @@ shinyUI(dashboardPage(skin = "green",
                     inputId ="plot_sig",
                     label = "Significance",
                     choices = c("yes" = "sig"
-                                , "no" 
+                                , "no" = "none"
                                 ),
                     inline = TRUE)
                 ),
@@ -716,7 +775,7 @@ shinyUI(dashboardPage(skin = "green",
                     label = "Error",
                     choices = c("ste"
                                 , "std"
-                                , "no"
+                                , "no" = "none"
                                 ),
                     inline = TRUE)
                 )
@@ -768,13 +827,17 @@ tabItem(tabName = "germint",
                       ),
                       
                       
-                      column(width = 4),
-                      
+                      column(width = 4,
+                             
+                             uiOutput('smvar')
+                             
+                             ),
                       
                       column(width = 4,
                              
-                             textInput(inputId ="intime_xbrakes"
-                                       , label = "X brake labels (,)")
+                             # textInput(inputId ="intime_xbrakes"
+                             #           , label = "X brake labels (,)"
+                             #           )
                              
                       ),
                       
@@ -783,9 +846,9 @@ tabItem(tabName = "germint",
                              textInput(inputId ="intime_gbrakes"
                                        , label = "Group brake labels (,)")
                              
-                      ),
+                             ),
                       
-                  ),
+                      ),
                   
                   
                   
@@ -886,13 +949,6 @@ tabItem(tabName = "germint",
                            
                            column(width = 12,
                                   
-                                  uiOutput('smvar')
-
-                                 ),
-                           
-                           column(width = 12,
-
-
                                   radioButtons(
                                     inputId ="intime_type",
                                     label = "Type",
@@ -907,7 +963,7 @@ tabItem(tabName = "germint",
                                     inputId ="intime_color",
                                     label = "Color",
                                     choices = c("yes"
-                                                , "no"
+                                                , "no" = "none"
                                     ),
                                     inline = TRUE)
                            ),
@@ -919,7 +975,7 @@ tabItem(tabName = "germint",
                                     label = "Error",
                                     choices = c("ste"
                                                 , "std"
-                                                , "no"
+                                                , "no" = "none"
                                                 ),
                                     inline = TRUE)
                            )
@@ -997,31 +1053,32 @@ tabItem(tabName = "germint",
                          
                          numericInput("temp", label = p("Temperature (\\(^{o}C\\))"), value = 25.0),
                          
-                         conditionalPanel(
-                           
-                           
-                           condition = "input.tool_osmp == 'salt'",
-                           
-                           column(width = 6,
-                                  
-                            numericInput("psm", label = p("Molecular weight"), value = 58.4428, min = 0)
-                                  
-                                ),
-                           
-                           column(width = 6,
-                                  
-                            numericInput("dis", label = p("Salt dissociation constant"), value = 1.8, min = 0)
-                                  
-                                  
-                           )
-                                    
-    
-                         )
                          
-                  )
-
+                  ),
+                  
+                  conditionalPanel(
+                    
+                    
+                    condition = "input.tool_osmp == 'salt'",
+                    
+                    column(width = 6,
+                           
+                           numericInput("psm", label = p("Molecular weight"), value = 58.4428, min = 0)
+                           
+                    ),
+                    
+                    column(width = 6,
+                           
+                           numericInput("dis", label = p("Salt dissociation constant"), value = 1.8, min = 0)
+                           
+                           
+                    )
+                    
+                    
+                  ),
+                  
                 )
-
+                
             )
                 
                 
