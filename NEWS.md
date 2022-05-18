@@ -1,3 +1,10 @@
+# Version 2.1.4
+
+- *Package*
+  - Update logos
+  - Update webpage
+  - GerminaQuant: column with [] are excluded in the analysis
+
 # Version 2.1.3
 
 - *Package*
