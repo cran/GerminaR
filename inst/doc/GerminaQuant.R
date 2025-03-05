@@ -25,5 +25,5 @@ knitr::include_graphics('files/plot.png')
 knitr::include_graphics('files/gtime.png')
 
 ## ----references---------------------------------------------------------------
-if(!file.exists("files/pkgs.bib")){write_bib(c(.packages()),'files/pkgs.bib')}
+if(!file.exists("files/pkgs.bib")){knitr::write_bib(c(.packages()),'files/pkgs.bib')}
 

@@ -1,7 +1,7 @@
 ## ----setup, include=FALSE-----------------------------------------------------
 source("https://raw.githubusercontent.com/Flavjack/inti/master/pkgdown/favicon/docs.r")
 
-## ---- echo=TRUE---------------------------------------------------------------
+## ----echo=TRUE----------------------------------------------------------------
 # Install packages and dependencies
 
 library(GerminaR)
@@ -18,7 +18,7 @@ fb %>%
    head(10) %>% 
    kable(caption = "Prosopis dataset")
 
-## ---- echo=TRUE---------------------------------------------------------------
+## ----echo=TRUE----------------------------------------------------------------
 
 # germination analysis (ten variables)
 
@@ -35,7 +35,7 @@ gsm %>%
   kable(caption = "Function ger_summary performe ten germination indices")
 
 
-## ---- echo=TRUE, fig.cap="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Bar graph with germination percentage in a factorial analisys"----
+## ----echo=TRUE, fig.cap="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Bar graph with germination percentage in a factorial analisys"----
 
 ## Germination Percentage (GRP)
 
@@ -75,7 +75,7 @@ grp <- mc_grp$table %>%
 grp
 
 
-## ---- echo=TRUE, fig.cap="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Bar graph for mean germination time in a factorial analisys."----
+## ----echo=TRUE, fig.cap="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Bar graph for mean germination time in a factorial analisys."----
 
 ## Mean Germination Time (MGT)
 
@@ -113,7 +113,7 @@ mgt <- mc_mgt$table %>%
 
 mgt
 
-## ---- echo=TRUE, fig.cap="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Line graph from cumulative germination under different osmotic potentials."----
+## ----echo=TRUE, fig.cap="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Line graph from cumulative germination under different osmotic potentials."----
 
 # data frame with percentage or relative germination in time by NaCl
 
@@ -148,7 +148,7 @@ nacl <- git %>%
 nacl
 
 
-## ---- echo=TRUE, fig.cap="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Line graph from cumulative germination under different temperatures."----
+## ----echo=TRUE, fig.cap="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Line graph from cumulative germination under different temperatures."----
 
 # data frame with percentage or relative germination in time by temperature
 
@@ -180,7 +180,7 @@ temp <- git %>%
         ) 
 temp
 
-## ---- echo=TRUE---------------------------------------------------------------
+## ----echo=TRUE----------------------------------------------------------------
 
 library(ggplot2)
 
