@@ -48,8 +48,9 @@ overflow: visible;
 }
 </style>
 <style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -60,7 +61,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
 { counter-reset: source-line 0; }
@@ -392,25 +393,23 @@ your own data and proceed according to the following script:</li>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Install packages and dependencies</span></span>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(GerminaR)</span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co"># load data</span></span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>fb <span class="ot">&lt;-</span> prosopis <span class="sc">%&gt;%</span> </span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(nacl, temp, rep), as.factor))</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co"># load data</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>fb <span class="ot">&lt;-</span> prosopis</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co"># Prosopis data set</span></span>
 <span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co"># Prosopis data set</span></span>
-<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>fb <span class="sc">%&gt;%</span> </span>
-<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>   <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>   <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">&quot;Prosopis dataset&quot;</span>)</span></code></pre></div>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>fb <span class="sc">%&gt;%</span> </span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>   <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>   <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">&quot;Prosopis dataset&quot;</span>)</span></code></pre></div>
 <table>
 <caption>Prosopis dataset</caption>
 <thead>
 <tr class="header">
-<th align="left">rep</th>
-<th align="left">nacl</th>
-<th align="left">temp</th>
+<th align="right">rep</th>
+<th align="right">nacl</th>
+<th align="right">temp</th>
 <th align="right">seeds</th>
 <th align="right">D0</th>
 <th align="right">D1</th>
@@ -427,9 +426,9 @@ your own data and proceed according to the following script:</li>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">1</td>
-<td align="left">0</td>
-<td align="left">25</td>
+<td align="right">1</td>
+<td align="right">0.0</td>
+<td align="right">25</td>
 <td align="right">50</td>
 <td align="right">0</td>
 <td align="right">39</td>
@@ -444,9 +443,9 @@ your own data and proceed according to the following script:</li>
 <td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="left">2</td>
-<td align="left">0</td>
-<td align="left">25</td>
+<td align="right">2</td>
+<td align="right">0.0</td>
+<td align="right">25</td>
 <td align="right">50</td>
 <td align="right">0</td>
 <td align="right">40</td>
@@ -461,9 +460,9 @@ your own data and proceed according to the following script:</li>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="left">3</td>
-<td align="left">0</td>
-<td align="left">25</td>
+<td align="right">3</td>
+<td align="right">0.0</td>
+<td align="right">25</td>
 <td align="right">50</td>
 <td align="right">0</td>
 <td align="right">34</td>
@@ -478,9 +477,9 @@ your own data and proceed according to the following script:</li>
 <td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="left">4</td>
-<td align="left">0</td>
-<td align="left">25</td>
+<td align="right">4</td>
+<td align="right">0.0</td>
+<td align="right">25</td>
 <td align="right">50</td>
 <td align="right">0</td>
 <td align="right">43</td>
@@ -495,9 +494,9 @@ your own data and proceed according to the following script:</li>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="left">1</td>
-<td align="left">0</td>
-<td align="left">30</td>
+<td align="right">1</td>
+<td align="right">0.0</td>
+<td align="right">30</td>
 <td align="right">50</td>
 <td align="right">0</td>
 <td align="right">48</td>
@@ -512,9 +511,9 @@ your own data and proceed according to the following script:</li>
 <td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="left">2</td>
-<td align="left">0</td>
-<td align="left">30</td>
+<td align="right">2</td>
+<td align="right">0.0</td>
+<td align="right">30</td>
 <td align="right">50</td>
 <td align="right">0</td>
 <td align="right">47</td>
@@ -529,9 +528,9 @@ your own data and proceed according to the following script:</li>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="left">3</td>
-<td align="left">0</td>
-<td align="left">30</td>
+<td align="right">3</td>
+<td align="right">0.0</td>
+<td align="right">30</td>
 <td align="right">50</td>
 <td align="right">0</td>
 <td align="right">50</td>
@@ -546,9 +545,9 @@ your own data and proceed according to the following script:</li>
 <td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="left">4</td>
-<td align="left">0</td>
-<td align="left">30</td>
+<td align="right">4</td>
+<td align="right">0.0</td>
+<td align="right">30</td>
 <td align="right">50</td>
 <td align="right">0</td>
 <td align="right">49</td>
@@ -563,9 +562,9 @@ your own data and proceed according to the following script:</li>
 <td align="right">0</td>
 </tr>
 <tr class="odd">
-<td align="left">1</td>
-<td align="left">0.5</td>
-<td align="left">25</td>
+<td align="right">1</td>
+<td align="right">0.5</td>
+<td align="right">25</td>
 <td align="right">50</td>
 <td align="right">0</td>
 <td align="right">10</td>
@@ -580,9 +579,9 @@ your own data and proceed according to the following script:</li>
 <td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="left">2</td>
-<td align="left">0.5</td>
-<td align="left">25</td>
+<td align="right">2</td>
+<td align="right">0.5</td>
+<td align="right">25</td>
 <td align="right">50</td>
 <td align="right">0</td>
 <td align="right">18</td>
@@ -606,17 +605,19 @@ results, which can be either of bars or lines graphics.</li>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a></span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co"># germination analysis (ten variables)</span></span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>gsm <span class="ot">&lt;-</span> <span class="fu">ger_summary</span>(<span class="at">SeedN =</span> <span class="st">&quot;seeds&quot;</span></span>
-<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>                   , <span class="at">evalName =</span> <span class="st">&quot;D&quot;</span></span>
-<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>                   , <span class="at">data =</span> fb</span>
-<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>                   )</span>
-<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co"># Prosopis data set processed</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>gsm <span class="ot">&lt;-</span> <span class="fu">ger_summary</span>(<span class="at">factors =</span> <span class="fu">c</span>(<span class="st">&quot;rep&quot;</span>, <span class="st">&quot;nacl&quot;</span>, <span class="st">&quot;temp&quot;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>                   , <span class="at">SeedN =</span> <span class="st">&quot;seeds&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>                   , <span class="at">evalName =</span> <span class="st">&quot;D&quot;</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>                   , <span class="at">cumulative =</span> <span class="cn">FALSE</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>                   , <span class="at">data =</span> fb</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>                   )</span>
 <span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a></span>
-<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>gsm <span class="sc">%&gt;%</span> </span>
-<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span><span class="fu">round</span>(., <span class="dv">2</span>))) <span class="sc">%&gt;%</span> </span>
-<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">&quot;Function ger_summary performe ten germination indices&quot;</span>)</span></code></pre></div>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co"># Prosopis data set processed</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>gsm <span class="sc">%&gt;%</span> </span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span><span class="fu">round</span>(., <span class="dv">2</span>))) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">&quot;Function ger_summary performe ten germination indices&quot;</span>)</span></code></pre></div>
 <table>
 <caption>Function ger_summary performe ten germination indices</caption>
 <colgroup>
@@ -1106,7 +1107,7 @@ results, which can be either of bars or lines graphics.</li>
 <span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>       , <span class="at">x =</span> <span class="st">&quot;temp&quot;</span></span>
 <span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>       , <span class="at">y =</span> <span class="st">&quot;grp&quot;</span></span>
 <span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>       , <span class="at">group =</span> <span class="st">&quot;nacl&quot;</span></span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>       , <span class="at">ylimits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">120</span>, <span class="dv">30</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>       , <span class="at">ylimits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">140</span>, <span class="dv">30</span>)</span>
 <span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>       , <span class="at">ylab =</span> <span class="st">&quot;Germination (&#39;%&#39;)&quot;</span></span>
 <span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>       , <span class="at">xlab =</span> <span class="st">&quot;Temperature&quot;</span></span>
 <span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>       , <span class="at">glab =</span> <span class="st">&quot;NaCl (MPa)&quot;</span></span>
@@ -1117,7 +1118,7 @@ results, which can be either of bars or lines graphics.</li>
 <span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a></span>
 <span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a>grp</span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img role="img" aria-label="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Bar graph with germination percentage in a factorial analisys" src="data:image/png;base64,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" alt="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Bar graph with germination percentage in a factorial analisys" width="98%" />
+<img role="img" aria-label="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Bar graph with germination percentage in a factorial analisys" src="data:image/png;base64,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" alt="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Bar graph with germination percentage in a factorial analisys" width="98%" />
 <p class="caption">
 Germination experiment with <em>Prosopis juliflor</em> under different
 osmotic potentials and temperatures. Bar graph with germination
@@ -1423,7 +1424,7 @@ percentage in a factorial analisys
 <span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a></span>
 <span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>mgt</span></code></pre></div>
 <div class="figure" style="text-align: center">
-<img role="img" aria-label="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Bar graph for mean germination time in a factorial analisys." src="data:image/png;base64,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" alt="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Bar graph for mean germination time in a factorial analisys." width="98%" />
+<img role="img" aria-label="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Bar graph for mean germination time in a factorial analisys." src="data:image/png;base64,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" alt="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Bar graph for mean germination time in a factorial analisys." width="98%" />
 <p class="caption">
 Germination experiment with <em>Prosopis juliflor</em> under different
 osmotic potentials and temperatures. Bar graph for mean germination time

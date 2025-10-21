@@ -1,9 +1,8 @@
 Type: Package
 Package: GerminaR
 Title: Indices and Graphics for Assess Seed Germination Process
-Version: 2.1.5
+Version: 2.1.6
 Description: A collection of different indices and visualization techniques for evaluate the seed germination process in ecophysiological studies (Lozano-Isla et al. 2019) <doi:10.1111/1440-1703.1275>.
-Date: 2025-03-04
 Authors@R: c(
     person("Flavio", "Lozano-Isla", email = "flozanoisla@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-0714-669X")),
     person("Omar", "Benites Alfaro", email = "obacc07@gmail.com", role = "aut", comment = c(ORCID = "0000-0002-6852-9598")),
@@ -17,20 +16,23 @@ Authors@R: c(
 URL: https://germinar.inkaverse.com/,
         https://github.com/flavjack/germinar
 BugReports: https://github.com/flavjack/germinar/issues
-Depends: shiny, agricolae, ggplot2, dplyr, R (>= 3.5.0)
-Imports: tidyr, tibble, purrr, DT
-Suggests: knitr, rmarkdown, gsheet, inti
-VignetteBuilder: knitr
 License: GPL-3 | file LICENSE
+Depends: shiny, agricolae, ggplot2, dplyr, R (>= 4.1.0)
+Imports: tidyr, tibble, purrr, DT
+Suggests: gsheet, cowplot, knitr, rmarkdown, bookdown, quarto, inti
+VignetteBuilder: knitr, quarto
 LazyData: true
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+SystemRequirements: pandoc
+RoxygenNote: 7.3.3
 NeedsCompilation: no
-Packaged: 2025-03-04 20:28:03 UTC; LENOVO
-Author: Flavio Lozano-Isla [aut, cre] (<https://orcid.org/0000-0002-0714-669X>),
-  Omar Benites Alfaro [aut] (<https://orcid.org/0000-0002-6852-9598>),
-  Marcelo F. Pompelli [aut, ths]
-    (<https://orcid.org/0000-0002-4408-6374>),
+Packaged: 2025-10-21 02:35:08 UTC; LENOVO
+Author: Flavio Lozano-Isla [aut, cre] (ORCID:
+    <https://orcid.org/0000-0002-0714-669X>),
+  Omar Benites Alfaro [aut] (ORCID:
+    <https://orcid.org/0000-0002-6852-9598>),
+  Marcelo F. Pompelli [aut, ths] (ORCID:
+    <https://orcid.org/0000-0002-4408-6374>),
   Denise Garcia de Santana [aut],
   Marli A. Ranal [aut],
   Federal University of Pernambuco [cph] (Register of application),
@@ -38,4 +40,4 @@ Author: Flavio Lozano-Isla [aut, cre] (<https://orcid.org/0000-0002-0714-669X>),
   Inkaverse [ctb]
 Maintainer: Flavio Lozano-Isla <flozanoisla@gmail.com>
 Repository: CRAN
-Date/Publication: 2025-03-05 08:40:11 UTC
+Date/Publication: 2025-10-21 11:20:08 UTC

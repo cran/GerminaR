@@ -1,7 +1,14 @@
-# Version 2.1.6 (In progress)
-  
-  [] Include commulative germination
-  [] Improve timeline selection factor
+# Version 2.1.6
+
+> *Package*
+
+- Now you can collect the data for daily count or cumulative germination.
+- Improve timeline selection factors
+
+> *GerminaQuant*
+
+- Update GerminaQuant app
+- You can include extra variables in the analysis
 
 # Version 2.1.5
 

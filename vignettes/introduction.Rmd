@@ -1,12 +1,21 @@
 ---
-title: "Introduction"
-output: rmarkdown::html_vignette
+title: "Seed germination process"
+author: "Flavio Lozano-Isla"
+output:
+  # bookdown::pdf_book:
+  #   keep_tex: true
+  bookdown::html_document2:
+    base_format: rmarkdown::html_vignette
+    toc: true
+    number_sections: false
+pkgdown:
+  as_is: true
 link-citations: true
 colorlinks: yes
 bibliography: [files/book.bib, files/pkgs.bib]
 csl: https://www.zotero.org/styles/apa
 vignette: >
-  %\VignetteIndexEntry{Introduction}
+  %\VignetteIndexEntry{Seed germination process}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -39,7 +48,7 @@ For a correct analysis and fast data processing is important to take into accoun
 
 ## Data organization
 
-For using GerminaR and GerminaQuant is necessary that you have a dataset with germination values. You can use a following data as an example [*"prosopis"*](https://docs.google.com/spreadsheets/d/1QziIXGOwb8cl3GaARJq6Ez6aU7vND_UHKJnFcAKx0VI/edit#gid=667855537). If you have a Google account you can made a copy of the document and edit it online or download in Excel format for your own analysis.
+For using GerminaR and GerminaQuant is necessary that you have a dataset with germination values. You can use a following data as an example [*"GerminaR"*](https://docs.google.com/spreadsheets/d/1QziIXGOwb8cl3GaARJq6Ez6aU7vND_UHKJnFcAKx0VI/edit?usp=sharing). If you have a Google account you can made a copy of the document and edit it online or download in Excel format for your own analysis.
 
 The fieldbook should have three essential parts.(1) The factor columns (red), according to the experimental design;(2) the seed number column, indicate the number of seeds sown in each experimental unit (green) and (3) the evaluation columns with the germination values (blue). You can design your own field book with different names in the column according your experimental design.
 
@@ -53,7 +62,7 @@ The evaluation of the germination process is obtained of the count of the germin
 
 # Germination analysis
 
-After the data collection, the information can be processed using GerminaR by the [R console](https://germinar.inkaverse.com/articles/GerminaR) or using the [GerminaQuant](https://germinar.inkaverse.com/articles/GerminaQuant) app. 
+After the data collection, the information can be processed using GerminaR by the [R console](https://germinar.inkaverse.com/articles/GerminaR) or using the [GerminaQuant](https://germinar.inkaverse.com/articles/GerminaR) app. 
 
 # References {-}
 

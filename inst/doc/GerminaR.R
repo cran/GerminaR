@@ -5,12 +5,10 @@ source("https://raw.githubusercontent.com/Flavjack/inti/master/pkgdown/favicon/d
 # Install packages and dependencies
 
 library(GerminaR)
-library(dplyr)
 
 # load data
 
-fb <- prosopis %>% 
-   mutate(across(c(nacl, temp, rep), as.factor))
+fb <- prosopis
 
 # Prosopis data set
 
@@ -22,8 +20,10 @@ fb %>%
 
 # germination analysis (ten variables)
 
-gsm <- ger_summary(SeedN = "seeds"
+gsm <- ger_summary(factors = c("rep", "nacl", "temp")
+                   , SeedN = "seeds"
                    , evalName = "D"
+                   , cumulative = FALSE
                    , data = fb
                    )
 
@@ -63,7 +63,7 @@ grp <- mc_grp$table %>%
        , x = "temp"
        , y = "grp"
        , group = "nacl"
-       , ylimits = c(0, 120, 30)
+       , ylimits = c(0, 140, 30)
        , ylab = "Germination ('%')"
        , xlab = "Temperature"
        , glab = "NaCl (MPa)"
@@ -73,7 +73,6 @@ grp <- mc_grp$table %>%
        )
 
 grp
-
 
 ## ----echo=TRUE, fig.cap="Germination  experiment with *Prosopis juliflor* under different osmotic potentials and temperatures. Bar graph for mean germination time in a factorial analisys."----
 
